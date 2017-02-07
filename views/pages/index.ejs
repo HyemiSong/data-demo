@@ -4,7 +4,7 @@
   <% include ../partials/header.ejs %>
 </head>
 
-<body> 
+<body bgcolor="#101010"> 
 
   <% include ../partials/nav.ejs %>
 
@@ -1381,10 +1381,11 @@
       text("About", width-44, 8, 250, 200);
 
       //ARCHIVE
-      rect(width-154, 0, 54, 25);
+      noFill()
+      rect(width-104, 0, 54, 25);
       fill(255);
       textSize(12);
-      text("Archive", width-144, 8, 250, 200);
+      text("Archive", width-104, 8, 250, 200);
 
 
       //horizon line & below cross line
