@@ -4,7 +4,7 @@
   <% include ../partials/header.ejs %>
 </head>
 
-<body bgcolor="#101010"> 
+<body> 
 
   <% include ../partials/nav.ejs %>
 
@@ -1378,8 +1378,11 @@
       rect(width-54, 0, 54, 25);
       fill(255);
       textSize(12);
-      text("Archive", width-44, 8, 250, 200);
-]
+      text("ARCHIVE", width-44, 8, 250, 200);
+
+
+
+
       //horizon line & below cross line
       stroke(255);
       strokeWeight(0.1); 
@@ -1533,7 +1536,7 @@
       }
 
            if (aboutBTNOver == true) {
-           String url = "";
+           String url = "https://www.behance.net/gallery/38523491/DATALOVERS?";
            link(url, "_new");
       }
 
