@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body> 
+
+  <% include ../partials/nav.ejs %>
+
+  <table cellpadding="0" cellspacing="0" width="100%" height="100%" >
+  <tr>
+
+  <td width="10%" align="left" valign="top">
+  </td>
+
+  <td width="80%" align="center"> 
+
+   <script type="application/processing">
+  ArrayList users = new ArrayList();
+  ArrayList screenName = new ArrayList();
+  ArrayList lists = new ArrayList();
+  ArrayList addressList = new ArrayList();
+  ArrayList addressName = new ArrayList();
+  ArrayList msgList = new ArrayList();
+
+  ArrayList coordPop = new ArrayList();
+  ArrayList addressTxt = new ArrayList();
+  ArrayList conPList = new ArrayList();
+  ArrayList conQList = new ArrayList();
+
+  ArrayList tweetsTexts = new ArrayList();
+  //String[] tweetsText;
+  //String[] tweetsTextString;
+
+    //circles
+    //"#101010"
+    int numCircles = 100;
+    int numrCircles =100;
+    int numArea = 7;
+    Circle[] circles = new Circle[numCircles];
+    rCircle[] rcircles = new rCircle[numrCircles];
+    MapArea[] mapArea = new MapArea[numArea];
+    //twit word
+    ArrayList words = new ArrayList();
+    //User userss;
+    //reference list
+    tList[] tlists = new tList[numCircles];
+    rList[] rlists = new rList[numrCircles];
+    //rList[] rwaitlists = new rList[100-numrCircles];
+    //basic setting
+    PFont font;
+    PImage worldMap;
+    PImage detail_btn_0;
+    PImage detail_btn_1;
+    PImage detail_btn_3;
+    font = loadFont("Arial.ttf"); 
+
+    //clicked list
+    int selectedTwitNum=0; //clicked twitList
+  int selectedRefNum=0; //clicked refList
+
+  //mouseover list
+  int m=0; //touched twitList
+  int n=0; //touched refList
+    
+    //list boolean
+  //boolean twitList = false;
+  boolean twitDetail = false;
+  boolean refDetail = false;
+  //boolean refMove = false;
+  //boolean twitMove = false;
+
+  //BTN boolean
+  //boolean tMoveBTNOver = false;
+  //boolean rMoveBTNOver = false;
+  boolean listBTNOver = false;
+  boolean aboutBTNOver = false;
+  boolean linkBTNOver = false;
+  boolean clicked = false;
+  boolean continentClicked = false;
+
+
+    //location
+  float closestDist;
+  String closestText = new String();
+  float closestTextX;
+  float closestTextY;
+  String url = new String();
+  String[] response;
+  String[] responseArr;
+  String BASE_URL;
+  String address;
+  String addressEdit;
+  String test;
+
+  //reference Table
+  Table RefTable;
+  int rowCount;
+  String tweetString;
+  int tweetCount;
+  float twitLng = [];
+  float twitLat = [];
+    
+    //List index
+  int NAindexCon;
+  int SAindexCon;
+  int AFindexCon;
+  int EUindexCon;   
+  int ASindexCon;
+  int OCindexCon;
+  int NRindexCon;
+  
+  ArrayList NAindexConArr = new ArrayList();
+  ArrayList SAindexConArr = new ArrayList();
+  ArrayList AFindexConArr = new ArrayList();
+  ArrayList EUindexConArr = new ArrayList();
+  ArrayList ASindexConArr = new ArrayList();
+  ArrayList OCindexConArr = new ArrayList();
+  ArrayList NRindexConArr = new ArrayList();
+
+  ArrayList rNAindexConArr = new ArrayList();
+  ArrayList rSAindexConArr = new ArrayList();
+  ArrayList rAFindexConArr = new ArrayList();
+  ArrayList rEUindexConArr = new ArrayList();
+  ArrayList rASindexConArr = new ArrayList();
+  ArrayList rOCindexConArr = new ArrayList();
+  ArrayList rNRindexConArr = new ArrayList();
+
+  
+  String[] tAreaIndexArr = {NAindexConArr,SAindexConArr,EUindexConArr,AFindexConArr,ASindexConArr,OCindexConArr,NRindexConArr};
+
+  String[] rAreaIndexArr = {rNAindexConArr,rSAindexConArr,rEUindexConArr,rAFindexConArr,rASindexConArr,rOCindexConArr,rNRindexConArr};
+
+  String[] ContinentName = {"North America","South America","Europe","Africa","Asia","Oceania","SomeWhere"};
+   
+    int selectedNum;
+   // int dselectedNum = 0;
+    
+    //List setting
+  int numOfDot=15;
+    int start = 4;
+    int listStart = 10;
+  int divide = 7;
+    int dim = 7.5;
+    int areaNum = 10;
+    int addY; 
+  int[] eachStart = new array[divide];
+  int listStart = height-390;
+  
+
+  var tweets = [];
+  var fromUser = [];
+  var fromUserName = [];
+  var userLocation = [];
+  var tweetID = [];
+  var retweetCount = [];
+  var oriUserID = [];
+  var fromUserID = [];
+  var bodyContent;
+  var globals = "9";
+  boolean dataReceived = false;
+  //var realTimeData = false;
+  var final_result;
+  String countryCode = [];
+  String continentCode = [];
+  String addressCode = [];
+  var countAddress = [];
+
+  var twitter_api_url = "http://search.twitter.com/search.json?q=data+visualization";
+  //var user_url_form = 'http://api.twitter.com/1/users/show.json?screen_name=';
+  var user_url_form = "http://api.twitter.com/1/statuses/show.json?id=";
+  var geocoder = new google.maps.Geocoder();
+    
+    //twitter defalt data
+  var jtweets = ["Visualization of large amounts of data makes it ea…. More people are able to consume the information", "Introduction to Infographics and Data Visualizatio… @wiredinstructor | @scoopit http://t.co/9SvbUtCv", "I gave @pferdinandsen +K about Data Visualization on @klout http://t.co/rCoahPJ0", "RT @mhsorens: Visualisation of US immigration dete…co/iwtpDGUL #HumanRights advocacy #dataviz #HowTo", "@enf  Along the lines of your work...well sort of:↵http://t.co/PQlSRYEF", "Visualisation of US immigration detentions and rel…co/iwtpDGUL #HumanRights advocacy #dataviz #HowTo", "RT @KSwef: Interesting data (and intuitive visuali…roMonitor http://t.co/cyHBCIVE via @BrookingsInst", "RT @manovich: “@nealstimler: @manovich Have u thou….co/eJsKjMEk?” Yes in my 2002 article Data Aesth.", "كتاب مجاني من Oreilly عن التصوير التفاعلي للبيانات…ta Visualization for the Web http://t.co/kMSHz0KN", "وش أفضل ترجمة لمصطلح Data Visualization ؟", "RT @VivekGhosal: RT @Coachforyou↵↵9 Powerful Free …cs: http://t.co/Ez4DTfco  | RT @Infographics4u RT", "New MOOC Introduces You to the Wonderful World of … @wiredinstructor | @scoopit http://t.co/f7Dx9fdk", "Data Visualization: Math and Love http://t.co/FKjx…eres? Espera, vamos a calcularlo matematicamente.", "RT @SemanticWeb: Instem Launches Latest Version of…amp; #Visualization Software http://t.co/zWEElXaO", "analytics and bigdata: http://t.co/ReJPEOfD", "Visualization &amp; data guru Stephen Few reviews …, The Signal &amp; The Noise http://t.co/dTXRpZgS", "RT @soclpsych: http://t.co/Y2A6MDt9 news Literatur…cial scientists with data .. http://t.co/gRbZnUtB", "RT @Coachforyou↵↵9 Powerful Free #Infographic Tool…cs: http://t.co/Ez4DTfco  | RT @Infographics4u RT", "RT @ryancordell: XKCD’s “Calendar of Meaningful Da…’ based on Google ngram data http://t.co/W1YlbFr0", "5 Fab Twitter Follower Visualization Tools http://t.co/Idgv3p3R #data", "RT @BigDataClub: RT @SemanticWeb: Instem Launches …amp; #Visualization Software http://t.co/dQoTx5k5", "RT “@SSIReview: Bringing designers and visualizati…t - @darinmckeever @gatesfoundation #DataNowWhat”", "Joy Division's Unknown Pleasures Cover Art - Data…Reinterpreted by VISUALIZED http://t.co/rPF3rHfV", "RT @gretabyrum: Talking data visualization @AMP. O…ith this! #ultimatediscotechmoment #detroitfuture", "RT @Coachforyou: 9 Powerful Free #Infographic Tool…/ylBl8PjR | RT @Infographics4u RT @webpixelkonsum", "9 Powerful Free #Infographic Tools To Create Your …/ylBl8PjR | RT @Infographics4u RT @webpixelkonsum", "The birth of a word - Deb Roy: http://t.co/3twi0Mg…mazing data visualization that will be the future", "Four Great Websites for Data Visualization Inspiration http://t.co/DUfaIpWF", "RT @steview8: Cool data visualization! Mass-transit patterns for NYC http://t.co/A1QMdv1o @phd_us", "Cool data visualization! Mass-transit patterns for NYC http://t.co/A1QMdv1o @phd_us", "Many Eyes : Visualization Options http://t.co/SZx9ZHoo #journalism", "Infographics and charts - interactive data visualization | Infogr.am http://t.co/h4zlOnme", "RT @katanalyze: @kanter @HollyStClair @sidravitale…age Using Data Visualization http://t.co/KeCfbFZB", "http://t.co/ulrGrvbK data visualization", "The Changing Goals of Data Visualization |  http://t.co/KdnCoCRl", "@justjlo data visualization lovers of the world unite! :-) http://t.co/OQdGk88q", "RT @katanalyze: @kanter @HollyStClair @sidravitale…age Using Data Visualization http://t.co/KeCfbFZB", "RT @johnmaeda: A great place to visit for data vis…on toolkits and info-wonder. http://t.co/IFTxIEvc", "RT @KSwef: Interesting data (and intuitive visuali…roMonitor http://t.co/cyHBCIVE via @BrookingsInst", "“@nealstimler: @manovich Have u thought about Bro….co/eJsKjMEk?” Yes in my 2002 article Data Aesth.", "RT @Infographics4u: 9 Powerful Free Infographic To…raphics - DATA VISUALIZATION http://t.co/Zzle9lEr", "Interesting data (and intuitive visualization) on …roMonitor http://t.co/cyHBCIVE via @BrookingsInst", "9 Powerful Free Infographic Tools To Create Your O…raphics - DATA VISUALIZATION http://t.co/Zzle9lEr", "CMS Facing Delays in Rollout of Anti-Fraud System,…nds | @scoopit via @TriZetto http://t.co/sFpGhNA4", "Predictive Modeling With SAS Enterprise Miner: Pra… @scoopit via @owais26150269 http://t.co/nTneGsoz", "Data Mining as an Essential Informatics Skill Set …es | @scoopit via @marmacles http://t.co/hKoD5akZ", "Old Story Revisiting - DS - Forbes | @scoopit via @kjhealy http://t.co/zWHfWezw", "Big Data – Can You Afford To Ignore It? | @scoopit via @Biz_Innovations http://t.co/JHUNPEcn", "Big Data News of the Week: Beautiful $300,000 Mind…| @scoopit via @JaniceRuffin http://t.co/3cZEZcSE", "Big Data Insights Will Never Substitute For Imagin… @scoopit via @TechDigest360 http://t.co/2Bkub5RT", "Real-Time Predictive Analytics with Big Data, and R | SmartData ... | @scoopit http://t.co/QTkJ1sN7", "@alicechatter @powerfulpoint Stephen Few's book or…sh the latter - but data visualization - oh yeah!", "A Living, Breathing Infographic: A Look at the Web…Visualization via @MYDstudio http://t.co/jL3AKD4V", "I gave @AxelS +K about Data Visualization on @klout http://t.co/C0U9DffP", "What is Data Visualization? http://t.co/n5PNXdca #venndiagram", "What is Data Visualization? http://t.co/7TsGihsO", "eBay+death of a salesman+data visualization+creati…iful and interesting project: enjoy this article!", "Powerpoint data visualization makes the complex clear http://t.co/SM2LB5nx", "http://t.co/XQZeCGzo Code For America - Big Data For Public Good", "RT @rayjoe: Intro to #inforgraphics &amp; #dataviz… http://t.co/tRZeJHa2 cc @shazster @elizabethjoss", "RT @gretabyrum: Talking data visualization @AMP. O…ith this! #ultimatediscotechmoment #detroitfuture", "@EeyJude Éste https://t.co/I1F1B2Vt", "http://t.co/uny6hjvJ news Literature Visualization…al scientists with data o... http://t.co/HAQLTqAV", "Data is fun! RT @infografix Infographics and chart…a #visualization | Infogr.am http://t.co/Hwwx3vX3", "RT @ActivateLearn: MT&gt; So many MOOCs, so little…ics &amp; Data Visualization http://t.co/hUXLZltj", "RT @BenjaminHarwood: Introduction to Infographics … January 2013 via @suebecks https://t.co/xOqy34g2", "Infographics and charts - interactive data visualization | Infogr.am http://t.co/EsUGKUvu", "The Importance of #Data #Visualization to Business…#PowerOLAP Internet Data Services enables easy...", "Intro to #inforgraphics &amp; #dataviz: free Knigh… http://t.co/tRZeJHa2 cc @shazster @elizabethjoss", "@jschwabish who? Ah, yes, heard of him too. :). Ha…library (need to update it): http://t.co/zsWV3Zza", "The Little List of Free Online Data Science Courses via @ds_ldn http://t.co/tRZeJHa2", "Talking data visualization @AMP. One young man to …ith this! #ultimatediscotechmoment #detroitfuture", "MT&gt; So many MOOCs, so little time! &gt;New MOOC…ics &amp; Data Visualization http://t.co/hUXLZltj", "RT @shiftourpower: U.S. Energy: Where It’s From, W…nd What’s Wasted - Bloomberg http://t.co/YMhwydVW", "If your content's good enough, it doesn't matter … on Data Visualization at #ONACamp #inspirational", "U.S. Energy: Where It’s From, Where It Goes, and What’s Wasted http://t.co/N0yvrgKs", "WORTH RE-READING:: Content Marketing Metrics -  by…se more data visualization.  http://t.co/46sIeHME", "Flare | Data Visualization for the Web http://t.co/vJgt0Obo #data", "RT @paula_ugalde: Infographics Archive | Infograph…ata Visualization | @scoopit http://t.co/z8XtsSlc", "9 Powerful Free #Infographic Tools To Create Your …://t.co/4pRiSaJm | RT @Infographics4u @kelliechio", "35 Outstanding Data Visualization Examples - http://t.co/YdLEAYhi", "#DataViz in context &gt; Robert Korsara's concise …t.co/BFYB5ppy via @powerfulpoint RT @VizwerxGroup", "@Brianne_barry Intro to Infographics and Data Vis from Knight Center http://t.co/4GjkclQo", "RT @namhenderson: #UNDP Launches Open Data Site To…co/iEAaGviB #visualization #transparency via @TPM", "Infographics Archive | Infographic Website Offerin…ata Visualization | @scoopit http://t.co/z8XtsSlc", "@EPiC_Isha  I'm in Atlanta! &amp; I'm doing a onli…ter course. Mock up is a fancy word 4 sketch! LOL", "RT @LauraCMeyer: 7 things I learned about data vis…e should always be able to digest numbers quickly", "7 things I learned about data visualization (http:…e should always be able to digest numbers quickly", "Literature Visualization: Visualizations are not j…n their hands. They can b... http://t.co/tvXt7nDA", "#UNDP Launches Open Data Site To Track All $5.8B I…co/iEAaGviB #visualization #transparency via @TPM", "A UI for Big Data Visualization - a UX Week '12 ta…by @jonathanstray #UI #bigdata #informationdesign", "RT @VizwerxGroup: #DataViz in context &gt; MT @DGM…his post. http://t.co/oUgX3l3q via @powerfulpoint", "News-driven data visualization? It's not as easy as it sounds, says @kevinq #ONACamp", "New MOOC Introduces You to the Wonderful World of … &amp; Data Visualization |  http://t.co/xm6fLPya", "O'Reilly® Interactive Data Visualization for the W…ction to Designing With D3 - http://t.co/PmME8bcT", "#DataViz in context &gt; MT @DGM885: Robert Korsar…his post. http://t.co/oUgX3l3q via @powerfulpoint", "Data visualization: The People's Bank of China balance sheet - http://t.co/69NFjAdH", "Register for this free course: Introduction to Inf…://t.co/sBrmmH6J (via @knightfdn) cc: @lapaperboy", "I just liked A walk in Barcelona. Visualization of GPS data. on Vimeo: http://t.co/2E377IdP", "Visualization, visual perception, high dimensional…. I want to mix my expertise with entirely dif..."]
+
+
+    var jfromUser = ["Ned_MzH", "jimungimm", "AustinMSlingers", "visualligence", "erik_griswold", "mhsorens", "klenushka", "AnthonyMasure", "ecleel", "ecleel", "Coachforyou", "jimungimm", "iicaza", "ConsultRamy", "sqlbelle", "MortimerDanger", "IanVol", "VivekGhosal", "annemcgrail", "sml8data", "KirkDBorne", "AasavriTalwar", "innominatus", "DivineSpeech", "moritherapy", "Coachforyou", "ozeraser", "michaeloroberts", "EveLFantom", "steview8", "sml8data", "infografix", "shannon_ritchie", "AdamSuess", "marobella", "littlemisselsie", "kanter", "thebabar", "IdemEst", "manovich", "bethparker", "KSwef", "Infographics4u", "AnalyticsInnova", "AnalyticsInnova", "AnalyticsInnova", "AnalyticsInnova", "AnalyticsInnova", "AnalyticsInnova", "AnalyticsInnova", "AnalyticsInnova", "Michelle_Mazur", "zeitguy", "Analyticus", "InfographBoard", "InfographBoard", "now_its_nora", "CauseRelated", "Nnayya", "visualligence", "Allied_Media", "FrancescLlorens", "SoclPsych", "southoz", "southoz", "ePirate", "infografix", "PARIS_Tech", "rayjoe", "camoesjo", "rayjoe", "gretabyrum", "ActivateLearn", "IMTCliff", "HarringtonBecca", "GreenWildcats", "grahamjones", "sml8data", "metpesqjor", "webpixelkonsum", "nenunonews", "OttmarAmann", "wellsangels", "OpenDataIT", "paula_ugalde", "ShaunaReporter", "OpenDataIT", "LauraCMeyer", "sociologyFeed", "namhenderson", "dtelepathy", "visualligence", "andrea_parrott", "ediazsan", "ecomputerbooks", "VizwerxGroup", "chuckpharris", "stevesaldivar", "tobiasholzmann", "t5_profession"]
+
+
+     var jfromUserName = ["Ned", "jimungimm", "AustinMedia Slingers", "visualligence", "Erik Griswold", "Mogens H. Sørensen", "Elena Kaye", "Anthony Masure", "عبدالعزيز الشتوي", "عبدالعزيز الشتوي", "Coachforyou", "jimungimm", "Iñigo Icaza", "Ramy Ghaly", "sqlbelle", "Mortimer Danger", "Ian Jones", "Vivek Ghosal", "anne mcgrail", "SML Data", "Kirk Borne", "Aasavri Talwar", "Wayne Tai", "Lottie Spady", "isabella mori", "Coachforyou", "Marc Lane", "Michael Roberts", "Eve L. Fantom", "Steve Williams", "SML Data", "Info-Graphics", "Shannon Ritchie", "Adam Suess", "Paul Marobella", "Leslie Carroll", "Beth Kanter", "Babar Bhatti", "Bernard Schachter", "manovich", "Bethanny Parker", "Kevin Steinberg", "Infographics Archive", "AnalyticsInnovations", "AnalyticsInnovations", "AnalyticsInnovations", "AnalyticsInnovations", "AnalyticsInnovations", "AnalyticsInnovations", "AnalyticsInnovations", "AnalyticsInnovations", "Michelle Mazur, Ph.D", "Jeff Beddow", "Cees Grootes", "Infographic Board", "Infographic Board", "Nóra", "Cause Related", "Nnayya", "visualligence", "AMP", "Francesc Llorens", "Social Psych", "Yvonne Murtagh", "Yvonne Murtagh", "ePirate", "Info-Graphics", "PARIS Technologies", "Raymond Joseph", "Jorge Camoes", "Raymond Joseph", "Greta Byrum", "Helen Blunden", "Cliff Majersik", "Rebecca Harrington", "Sustainable Davidson", "Graham Jones", "SML Data", "Elias Machado", "Ralph Scholze", "Nenuno News", "Ottmar Amann", "Nick Wells", "Open Data", "Paula Guarani-Kaiowá", "Shauna Stuart", "Open Data", "Laura Meyer", "Jason Jensen", "namhenderson", "Chuck Longanecker", "visualligence", "Andrea Parrott", "Eduardo Díaz- AER", "Free Computer Books", "VizwerxGroup", "Chuck Pharris", "Steve Saldivar", "tobias holzmann", "WH INTERVIEW"]
+
+     var juserLocation = ["Doha, Qatar", "Seoul, South Korea", "Hutto, TX, USA", "Somewhere on this Planet", "California, USA", "Copenhagen, Denmark", "Somewhere on this Planet", "Soin Visage & Corps, 75020 Paris, France", "Riyadh Saudi Arabia", "Riyadh Saudi Arabia", "Germany", "Seoul, South Korea", "Bilbao, Biscay, Spain", "Somewhere on this Planet", "Vancouver, BC, Canada", "Fishers, IN, USA", "Cornwall, UK", "Somewhere on this Planet", "Pacanów, Poland", "Somewhere on this Planet", "George Mason University Student Health Services, 4400 University Dr, Fairfax, VA 22030, USA", "Hong Kong", "Somewhere on this Planet", "Somewhere on this Planet", "Vancouver, BC, Canada", "Germany", "Adelaide SA, Australia", "Montreal, QC, Canada", "London, UK", "London, UK", "Somewhere on this Planet", "Chile", "Durham, NC, USA", "Singapore", "Juan Xxlll 617, Chaco Province, Argentina", "San Francisco, CA, USA", "Somewhere on this Planet", "Dallas, TX, USA", "Paris, France", "New York, NY, USA", "Grant, MI 49327, USA", "Somewhere on this Planet", "Somewhere on this Planet", "New Jersey, USA", "New Jersey, USA", "New Jersey, USA", "New Jersey, USA", "New Jersey, USA", "New Jersey, USA", "New Jersey, USA", "New Jersey, USA", "Seattle, WA, USA", "Bloomington, IN, USA", "The Hague, The Netherlands", "Somewhere on this Planet", "Somewhere on this Planet", "Edinburgh Rd, Windham, NH 03087, USA", "Oxfordshire, UK", "France", "Somewhere on this Planet", "Detroit, MI, USA", "Valencia, Province of Valencia, Spain", "Academia, PA 17082, USA", "Adelaide SA, Australia", "Adelaide SA, Australia", "Seton Hall University, 400 S Orange Ave, South Orange, NJ 07079, USA", "Chile", "International Offices, Stellenbosch University, Stellenbosch 7600, South Africa", "Cape Town, South Africa", "2715-311 Oeiras, Portugal", "Cape Town, South Africa", "Washington, DC, USA", "Melbourne VIC, Australia", "Washington, DC, USA", "Minneapolis, MN, USA", "Davidson, NC, USA", "Reading, UK", "Somewhere on this Planet", "Florianópolis - Santa Catarina, Brazil", "Dresden, Germany", "United Kingdom", "Regensburg, Germany", "Somewhere on this Planet", "Somewhere on this Planet", "Rio Grande do Sul, Brazil", "Atlanta, GA, USA", "Somewhere on this Planet", "Brooklyn, NY, USA", "Somewhere on this Planet", "University of Florida, 2500 SW 2nd Ave, Gainesville, FL 32607, USA", "San Diego, CA, USA", "Somewhere on this Planet", "Minnesota, USA", "Burgos, Province of Burgos, Spain", "Somewhere on this Planet", "Somewhere on this Planet", "Somewhere on this Planet", "Los Angeles, CA, USA", "Paris, France", "Miami, FL, USA"]
+
+
+     var jaddressList = ["Doha,+Qatar", "seoul.korea", "Hutto,+TX", "", "Exiled+to+Southern+California", "Copenhagen,+DK", "", "Paris+&+Montreuil+-+France", "Riyadh,+Saudi+Arabia", "Riyadh,+Saudi+Arabia", "Germany", "seoul.korea", "Bilbao", "Lebanon,+Qatar,+United+States", "vancouver,+canada", "Fishers,+IN", "Cornwall,+UK", "", "PacNW", "SML+Universe", "George+Mason+University", "Hong+Kong", "", "", "vancouver,+bc,+canada", "Germany", "Adelaide,+Australia", "Montreal,+Canada", "London.", "NYC+&+London", "SML+Universe", "Chile", "durham,+nc", "Singapore", "The+312+via+617", "San+Francisco", "", "Dallas,+TX", "Paris", "new+york", "Grant,+Michigan,+USA", "World+Economic+Forum+USA", "", "NJ,+USA", "NJ,+USA", "NJ,+USA", "NJ,+USA", "NJ,+USA", "NJ,+USA", "NJ,+USA", "NJ,+USA", "Seattle,+WA", "Bloomington", "The+Hague,Den+Haag,Netherlands", "", "", "Edinburgh+/+Derry~Londonderry", "Oxfordshire+UK", "France", "", "DETROIT", "Valencia,+España", "Academia", "Adelaide,+South+Australia", "Adelaide,+South+Australia", "Seton+Hall+University", "Chile", "International+Offices", "Cape+Town", "Oeiras", "Cape+Town", "Washington+DC", "Melbourne,+Australia", "Washington,+D.C.", "Minneapolis,+MN", "Davidson,+NC", "Reading,+UK", "SML+Universe", "Florianópolis,+SC,+Brasil", "Dresden", "UK", "Regensburg,+Germany", "", "", "RS,+Brasil", "Atlanta,+Ga", "", "Brooklyn,+NY", "", "Gator+Nation", "San+Diego,+CA", "", "Minnesota", "Spain.+Burgos.", "", "", "", "Los+Angeles", "paris", "Miami"]
+
+     var jtwitLng = [51.52247599999998, 126.97796919999996, -97.5466702, 190.1735831744698, -119.41793239999998, 12.568337100000008, 196.50756154383618, 2.39968250000004, 46.72416670000007, 46.72416670000007, 10.451526000000058, 126.97796919999996, -2.9234409000000596, 189.5787855348279, -123.1139268, -86.01387290000002, -4.652498199999968, 196.32293805421415, 21.04160490000004, 196.10201823233712, -77.31233959999997, 114.10949700000003, 194.7389379859631, 194.4415783433904, -123.1139268, 10.451526000000058, 138.5999594, -73.55399249999999, -0.12768310000001293, -0.12768310000001293, 192.97973284206438, -71.54296899999997, -78.898619, 103.81983600000001, -60.426218800000015, -122.41941550000001, 194.37227366200733, -96.80045109999998, 2.3522219000000177, -74.0059731, -85.81088190000003, 193.21495558309454, 197.05308546486395, -74.4056612, -74.4056612, -74.4056612, -74.4056612, -74.4056612, -74.4056612, -74.4056612, -74.4056612, -122.3320708, -86.52638569999999, 4.3006999000000405, 188.60877037921074, 193.93414874269712, -71.28957170000001, -1.2464674000000286, 2.213749000000007, 196.88515927351165, -83.0457538, -0.37680490000002465, -77.47611, 138.5999594, 138.5999594, -74.2465444, -71.54296899999997, 18.862668100000064, 18.424055299999964, -9.311896400000023, 18.424055299999964, -77.0363658, 144.97182859999998, -77.0363658, -93.26666999999998, -80.84868460000001, -0.9739059999999427, 195.04437847470018, -48.5494544, 13.737262099999953, -3.43597299999999, 12.100855899999942, 196.3185761164603, 188.94854760437357, -53.39060740000002, -84.3879824, 195.97972336399454, -73.94999999999999, 190.50685427093032, -82.3506142, -117.15725509999999, 193.41236822947013, -94.68589980000002, -3.699762299999975, 191.40906992542642, 191.63486641540277, 194.84576498332518, -118.2436849, 2.3522219000000177, -80.22643929999998]
+          
+     var jtwitLat = [25.280282, 37.566535, 30.54269949999999, 24.15979674678111, 36.778261, 55.6760968, 19.122117614706994, 48.8493208, 24.7116667, 24.7116667, 51.165691, 37.566535, 43.2569629, 22.988348031749965, 49.261226, 39.9555928, 50.5036299, 22.238378670400024, 50.400018, 18.145655851213277, 38.83162129999999, 22.396428, 23.15480361586252, 19.986178908830524, 49.261226, 51.165691, -34.92862119999999, 45.5086699, 51.5073346, 51.5073346, 18.475210870483906, -35.675147, 35.9940329, 1.352083, -26.7918814, 37.7749295, 18.39774388480747, 32.7801399, 48.856614, 40.7143528, 43.3361323, 18.890168372409434, 22.81695924592951, 40.0583238, 40.0583238, 40.0583238, 40.0583238, 40.0583238, 40.0583238, 40.0583238, 40.0583238, 47.6062095, 39.165325, 52.0704978, 15.868994769508035, 24.273395486043782, 42.8287961, 51.7612056, 46.227638, 24.467447291927428, 42.331427, 39.4702393, 40.49639, -34.92862119999999, -34.92862119999999, 40.7433774, -35.675147, -33.9335251, -33.9248685, 38.6919392, -33.9248685, 38.8951118, -37.8113667, 38.8951118, 44.983334, 35.4993031, 51.4528837, 18.606319391502083, -27.5969039, 51.0504088, 55.378051, 49.0145423, 15.734704051965863, 17.724856132509203, -29.534505, 33.7489954, 22.810701575463654, 40.65, 19.99215722676182, 29.6435064, 32.7153292, 19.647841494398207, 46.729553, 42.3408923, 20.1471301949192, 22.697340477125735, 22.70566955800915, 34.0522342, 48.856614, 25.7889689]
+
+     var countryCodeData = ["QA", "KR", "US", "Not Results", "US", "DK", "Not Results", "FR", "SA", "SA", "DE", "KR", "ES", "Not Results", "CA", "US", "GB", "Not Results", "PL", "Not Results", "US", "HK", "Not Results", "Not Results", "CA", "DE", "AU", "CA", "GB", "GB", "Not Results", "CL", "US", "SG", "AR", "US", "Not Results", "US", "FR", "US", "US", "Not Results", "Not Results", "US", "US", "US", "US", "US", "US", "US", "US", "US", "US", "NL", "Not Results", "Not Results", "US", "GB", "FR", "Not Results", "US", "ES", "US", "AU", "AU", "US", "CL", "ZA", "ZA", "PT", "ZA", "US", "AU", "US", "US", "US", "GB", "Not Results", "BR", "DE", "GB", "DE", "Not Results", "Not Results", "BR", "US", "Not Results", "US", "Not Results", "US", "US", "Not Results", "US", "ES", "Not Results", "Not Results", "Not Results", "US", "FR", "US"]
+
+     var continentData = ["AS", "AS", "NA", "Not Results", "NA", "EU", "Not Results", "EU", "AS", "AS", "EU", "AS", "EU", "Not Results", "NA", "NA", "EU", "Not Results", "EU", "Not Results", "NA", "AS", "Not Results", "Not Results", "NA", "EU", "OC", "NA", "EU", "EU", "Not Results", "SA", "NA", "AS", "SA", "NA", "Not Results", "NA", "EU", "NA", "NA", "Not Results", "Not Results", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "EU", "Not Results", "Not Results", "NA", "EU", "EU", "Not Results", "NA", "EU", "NA", "OC", "OC", "NA", "SA", "AF", "AF", "EU", "AF", "NA", "OC", "NA", "NA", "NA", "EU", "Not Results", "SA", "EU", "EU", "EU", "Not Results", "Not Results", "SA", "NA", "Not Results", "NA", "Not Results", "NA", "NA", "Not Results", "NA", "EU", "Not Results", "Not Results", "Not Results", "NA", "EU", "NA"]
+
+     var jtweetID = ["275207719370248192", "275206887752998912", "275200327320498177", "275196262150713346", "275191358141112320", "275190528528764928", "275176710255828993", "275174093094019072", "275173752348741633", "275168217146748929", "275167797095579648", "275164830573408256", "275162091441242113", "275150605864013824", "275147338778017792", "275136069471715330", "275133471494643713", "275132293281099776", "275120820592984064", "275114433636888576", "275113041731919873", "275111082148900864", "275109648695164929", "275109624066228225", "275099873169244160", "275099565311545344", "275096789219176449", "275089164544913408", "275085035462356992", "275083929109798912", "275071300366639104", "275068614971887616", "275062188996165633", "275061909043163137", "275045050055024640", "275042340777902080", "275040447087398912", "275036057999921153", "275035461347590145", "275035369655894016", "275033510497099776", "275031638528901120", "275030292018892800", "275029605801422848", "275029552416309248", "275029483780706304", "275029446455615489", "275029088803119104", "275028081515831296", "275027964205334528", "275027928851546112", "275021633868156928", "275020802955571201", "275015350440050688", "275015297566662657", "275015278960721921", "275013196421681152", "275004807943708672", "275000784108806144", "274999977216966657", "274998188258242560", "274997538975780864", "274996814015520768", "274994745732898816", "274994030570504192", "274992929376976896", "274992085873065984", "274991378927321088", "274990722678149121", "274989663096299520", "274987988830793728", "274986112576012288", "274985983743766529", "274984924631687168", "274983490200686592", "274978985157468160", "274978813564289024", "274978584635006976", "274977288720879617", "274974092308918273", "274973979079475201", "274970423161135105", "274969472358563842", "274966840889987072", "274966787974627328", "274965644041134080", "274964347468521472", "274963820466810880", "274963532859187200", "274961062258933760", "274954999530913792", "274954701252988929", "274953928523804672", "274950870469328896", "274947056794222592", "274943685030985728", "274943024193216512", "274942761386532865", "274940147626303488", "274939819950485505"]
+
+     var jretweetCount = [0, 0, 0, 1, 0, 1, 2, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 2, 1, 1, 0, 0, 1, 1, 0, 0, 2, 0, 0, 0, 2, 72, 2, 1, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 2, 1, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0];
+
+     var joriUserID = [19906816,166804367,102758473,293543852,620033039,37388206,91897535,8301552,10216982,10216982,21750314,166804367,17007340,95867028,17097802,21965409,399955473,203815855,52936162,893584340,534563976,285516072,23995240,23856768,814261,21750314,22609359,1443341,46234747,117564241,893584340,137788322,17300190,133263326,14110293,534751165,10297,7534252,367831218,13257922,11842862,242221453,287091362,53891843,53891843,53891843,53891843,53891843,53891843,53891843,53891843,450789926,18645138,18150701,534314890,534314890,373876019,280507002,45239140,293543852,47349792,54606488,46249946,9520122,9520122,17345678,137788322,74482728,25086866,10047202,25086866,342979657,450340061,483042187,543883322,556450953,9203572,893584340,263391670,347719056,462913202,237624488,129704468,934190372,232736252,72730144,934190372,137004103,176007413,15735733,7590212,293543852,398227047,97405431,136743212,390392465,33231808,15617862,401365603,308932812];
+
+     var jfromUserID = [19906816,166804367,102758473,37388206,620033039,37388206,242221453,13257922,10216982,10216982,203815855,166804367,17007340,21218658,17097802,21965409,399955473,203815855,20112111,893584340,507415544,285516072,23995240,342979657,21750314,21750314,22609359,1443341,117564241,117564241,893584340,137788322,52328110,133263326,14110293,534751165,52328110,15414807,242221453,13257922,287091362,242221453,287091362,53891843,53891843,53891843,53891843,53891843,53891843,53891843,53891843,450789926,18645138,18150701,534314890,534314890,373876019,280507002,45239140,25086866,342979657,54606488,46249946,9520122,450340061,19425796,137788322,74482728,25086866,10047202,25086866,342979657,450340061,92885820,543883322,556450953,9203572,893584340,232736252,347719056,462913202,237624488,129704468,15735733,232736252,72730144,137004103,137004103,176007413,15735733,7590212,390392465,398227047,97405431,136743212,390392465,33231808,15617862,401365603,308932812];
+
+
+    //referenc defalt data
+     var ref_Name = ["13pt", "Aaron Koblin", "Akaiving, Seoul", "Alexis Lloyd", "Applied data labs", "Applied Works", "Atireiopaunografico", "Ben fry", "Bestiario", "Bloom", "Blprnt.blg", "Cartastrophe", "Catalogtree", "Communicating with data", "ChartsBin", "Chartsnthings", "Chart Porn", "Civil Statistician", "Coolinfographics", "Complex Diagrams", "Data Art", "Data-driven journalism", "Datablog", "Data.gov", "Data.gov.uk", "Data Journalism Blog", "Data Pointed", "Datavisualization.ch", "David Rumsey Map Collection", "Designing Analytics", "Density Design", "Development Seed", "Dr Data's Blog", "Eager Eyes", "Edward Tufte", "Effective Graphs", "European Journalism Centre", "Eyeo Festival", "Excel Charts", "Fathom", "Feltron", "Fell in love with data", "Flink Labs", "Floatingsheep", "Flowingdata", "Hint.FM", "Indiemaps", "Infochimps", "Infographics news", "Infographics.kr", "Information is Beautiful", "Interactive Things", "I Love Chart", "Information Aesthetics", "Jess3", "Jim Vallandingham", "Jonathan Harris", "Joost Grootens", "Journalism in the age of data", "Juice Analytics", "Junk Charts", "Kelso's Corner", "Manuel Lima", "Marcos Weskamp", "Matthew Bloch", "Matthew Ericson", "Mahir", "MonsterSwell", "Moritz Stefaner", "Neoformix", "NYT.Labs", "Recommended Tools", "Periscopic", "Pitch Interactive", "Processing", "Randomwalks", "Revolutions", "Sense of Patterns", "Simply Statistics", "So Won Young", "Stamen Design", "Statistical Graphics and more", "Tecznotes", "The Daily Viz", "The Marauding Carto-nerd", "The Numbers Guy", "The World as Flatland", "T N T — The Network Thinkers", "Tulp Inspiration", "Vis4", "Visual Business Inteliigence", "VisualComplexity", "Visualizing Economics", "Visual Loop", "Visualising Data", "Visualizing.org", "Visual.ly", "Vizzuality", "VLC", "Well-formed data"]
+
+     var ref_Description = ["13pt is the studio of Jonathan Corum, an information designer and science graphics editor at The New York Times.", "Aaron Koblin is an artist and designer specializing in data and digital technologies. In 2010 Aaron was the Abramowitz Artist in Residence at MIT and he leads the Data Arts Team in Google's Creative Lab.", "Akaiving, Seoul is a blog to share the articles about Data visualization & infographic by Han, Hun. He is a Data Scientist and Visualist at Media Lab, Yonhap News Agency.", "Alexis Lloyd's personal blog. She is a Creative Technologist in the Research and Development Lab at The New York Times and is teaching in Parsons The New School for Design currently.", "Applied Data Labs discovers the data stories behind economics, politics, and everyday life, and creates the next generation of data tools.", "Applied Works is London based digital creative agency.", "In Portuguese, data analysis and graphics that appear in local newspapers.", "Ben Fry is a principal of Fathom, a design and software consultancy located in Boston. With Casey Reas of UCLA, he currently develops Processing, an open source programming environment.", "Interactive visualization company", "Bloom creates new type of visual discovery experiences with patterns and rhythms in the online services like twitter, facebook and itunes. Planetary is one of the recomendable works.", "Blog of Jer Thorp, who has recently been on a github binge. He is an artist and educator. Coming from a background in genetics, his digital art practice explores the many-folded boundaries between science, data, art, and culture. See also blprnt.tmblr.", "Daniel Huffman talks good maps. He is a cartographer, map critic, and occasional cartographic philosopher.", "Catalogtree is a dutch graphic design studio based in Arnhem. Design style of the website is noteworthy as a data visualization works.", "Jerome Cukier from the OECD", "ChartsBin is a web-based data visualization tool that will allow everyone to quickly and easily create rich interactive visualizations with their own data.", "A (personal) blog of data sketches from the New York Times Graphics Department. Maintained by Kevin Quealy.", "Mix of charts and graphs. They introduce an addictive collection of beautiful charts, graphs, maps, and interactive data visualization toys on topics from around the world.", "This blog run by Census Bureau statistician Jerzy Wieczorek", "Randy Krum who a president of InfoNewt posts highlights some of the best examples of data visualizations and infographics found in magazines, newspapers and on the Internet.", "Noah Iliinsky's blog. He is an author of [Designing Data Visualizations], and the technical editor of, and a contributor to, Beautiful Visualization, both published by O’Reilly Media.", "Data art is a collaborative effort between the BBC Learning and the Centre for Research in Education Art and Media, University of Westminster. It is funded by the UK Arts and Humanities Research Council.", "This website is dedicated to providing anyone interested in getting started with data driven journalism with a collection of learning resources, including relevant events, tools, tutorials, interviews and case studies.", "On The Guardian, poster of datasets and graphics", "This web site provides lots of datasets about the USA.", "There are currently over 5,400 datasets available about UK.", "The Data Journalism Blog brings you the latest news on data driven journalism with reviews, how-to guides, interviews and news features.", "Data Pointed is the home of artist and scientist Stephen Von Worley's data visualization research; a journal of interesting information imagery and news from around the world.", "Datavisualization.ch is published by Interactive Things, a design and technology studio based in Zürich, Switzerland. They update the latest research findings and most topical use cases in the blog.", "The David Rumsey Map Collection Database and Blog. The Map Database has many viewers and the Blog has numerous categories.", "Designing analytics is a company which designs and develops products specialized in data-driven user interfaces.", "DensityDesign is a Research Lab in the design department (INDACO) of the Politecnico di Milano. Their works focus on the visual representation of complex social, organizational and urban phenomena.", "Development Seed is a creative data visualization and mapping team. They have been committed to using open source software as their software development base.", "DoctorData’s newsfeed good to follow for various things data related (with newsblur).", "Research-focused blog. All articles are written by Robert Kosara who is Associate Professor of Computer Science at UNC Charlotte.", "Edward Tufte is an American statistician and professor emeritus of political science, statistics, and computer science at Yale University. He is noted for his writings on information design and as a pioneer in the field of data visualization.", "The author of Creating More Effective, GraphsNaomi Robbins's blog. There are fundamentals of graph-making.", "The European Journalism Centre (EJC) is an independent, international, non-profit institute dedicated to the highest standards in journalism, primarily through the further training of journalists and media professionals.", "The Eyeo Festival brings together the most creative coders, designers and artists working today, and shaping tomorrow - expect an amazing three days of talks, labs, demos & events fueled by the people and tools that are transforming digital culture. Converge to Inspire.", "The blog provides some useful information for beginners.", "Ben Fry-run studio talks about interesting things. You can read their official projects and recent news there.", "Nicholas Felton's tumblr. He is the co-founder of Daytum.com, and currently a member of the product design team at Facebook.", "FILWD is all about the joy and fun of getting interesting information out of data; better yet when it is large, complex, and dirty.", "Flink Labs is a data visualisation studio based in Melbourne. They design and develop interactive data experiences that help you gain insights into, and communicate the intelligence in, your complex data.", "This site is found by Matthew Zook and Mark Graham. They work about geography issues sort of mapping and analyzing user generated geocoded data in cyberspace.", "The blog run by Nathan Yau who wrote a book, FlowingData. There are some of his random experiments with both print and interactive stuff.", "Hink.FM is the collaboration site of Fernanda Viégas and Martin Wattenberg who are in Google's Big Picture data visualization group. Live Wind Map is their one of the famous data visualization projects.", "Usually on the how of maps. This is the blog of Zachary Forest Johnson, a cartographer and visualization engineer with the GeoIQ crew.", "Data supplier and hackers unite", "Highlights news graphics. Chiqui Esteban published this blog and spanish version, Infografistas. He works as Director of New Narratives of the spanish web media lainformacion.com and as infographics consultant for Innovation Media Consulting.", "Infographcs.kr introduces Data visualization & infographic works related to Korean issues.", "David McCandless is an independent data journalist and information designer. It is his official Blog.", "Interactive Things is a company that provide User Experience, Interaction Design and Data Visualization services.", "In September 2009, Cody Westphal and Jason Oberholtzer created I Love Charts. There are the best never-before-seen charts.", "Information aesthetics is a weblog collects projects that represent data or information in original or intriguing ways. And it is designed and maintained by Andrew Vande Moere.", "Jess3 is an agency that specializes in data visualization. Many people visit their blog to get recent news related to data visualization and inforgraphic.", "This blog run by Jim Vallandingham who works at Stowers Institute for Medical Research as a Programmer and Data Analyst. He releases good code sometimes for visualizing.", "He is the co-creator of [We Feel Fine], which continuously measures the emotional temperature of the human world through large-scale blog analysis, and has made other projects about online dating, modern mythology, happiness, anonymity, news, and language.", "Joost Grootens is a Netherlands based designer. His studio creates books in the fields of architecture, urban space and art, specializing on atlases, designing both the maps and the books. ", "Journalism in the Age of Data explores data visualization as a storytelling medium in an hour-long film highlighting some of the most important concepts, artists and projects in data visualization from the past few years by Geoff McGhee.", "Juice team is an expert in designing and building information-rich applications that connect people with data.", "Kaiser Fung's blog. He finds the not-so-good and explains how to improve them. See also sister blog Numbers Rule Your World.", "Nathaniel Kelso, cartographer at Stamen. He suggests visiting NaturalEarthData.com for awesome free GIS maps of the world. ", "Manuel Lima's personal blog. He is senior UX Design Lead at Microsoft, author, researcher and founder of VisualComplexity.com", "Marcos Weskamp is a Design Engineer who has a deep interest in playing with and visualizing lots of data. His one of the famous works is newsmap project.", "Matthew Bloch, a graphics editor for the New York Times. His selected infographics.", "Matthew Ericson is the deputy graphics director at The New York Times, where he helps oversee a department of journalists, artists and programmers who produce the interactive information graphics for nytimes.com, as well as all the graphics for the print newspaper.", "Mahir M. Yavuz's personal blog. His works are sensitive and artistic. Recently, he works as a design technologist at Seed Media Group.", "Monster Swell is an Amsterdam based data visualization agency that helps people work and play with large quantities of interesting data.", "Moritz Stefaner works as a [truth and beauty operator] on the crossroads of data visualization, information aesthetics and user interface design. He blogs at http://well-formed-data.net and publishes the Data Stories podcast together with Enrico Bertini.", "This blog show the features a variety of Jeff Clark 's projects. He have been a professional programmer for about twenty years and my current areas of interest include data mining, statistical analysis and visualization.", "The New York Times Company Research & Development Lab. They works to innovate around new technologies, anticipating consumer behaviors and building new interfaces for news.", "A Selected List of Recommended Tools by datavisualization.ch", "This blog published by a socially-conscious data visualization firm, do good with data.", "Pitch Interactive is a design agency. All of their works are related to data visualization strongly.", "Processing is a programming language, development environment, and online community that since 2001 by Ben Fry and Casey Reas. Many people use it for data visualization project as a tool.", "Randomwalks is a multi-disciplinary data visualization studio, that runs without hierarchy system with equal power and sharing since 2008. Sey Min, who leds the group, has been talking about datavis in various conferences and is a TED Senior Fellow 2012.", "This blog is written by members of staff at REvolution computing. They share statistics frequently.", "One of the Mahir M. Yavuz's works, Sense of Patterns is an on-going project, a series of printed data visualizations aiming to depict the behaviors of masses in different public spaces.", "They are three biostatistics professors (Jeff Leek, Roger Peng, and Rafa Irizarry) who are fired up about the new era where data are abundant and statisticians are scientists.", "So Won Young is a founder social funding service, TumbleBug. He recommends useful web links and information for data visualization in the blog.", "Stamen was founded by Eric Rodenbeck. This studio designs and developments focused on data visualization and map-making.", "Stories about the effective charts and dashboards for Excel users through the eyes of a statistician.", "Michal Migurski is the technology head at Stamen, a San Francisco design and development studio focused on data visualization and map-making. ", "By Matt Stiles, data journalist at NPR. He tries each day to create a data visualization, or I post those I find online. ", "Kenneth Field, research cartographer", "The Numbers Guy examines numbers in the news, business and politics. ", "The World as Flatland is specialized in the development and design of complex information. Thier objective is to derive additional knowledge by organising, combining, condensing and visualising complex data.", "This blog is focused on exploding old concepts and thinking about economies, organizations, communities, and groups.", "This tumblr run by Jan Willem Tulp of TULP interactive.", "Gregor Aisch produces a mix of work", "It is a consultancy was founded by Stephen Few. You can see his business-centric musings there.", "VisualComplexity.com is published by Manuel Lima. He said that the main goal of this web based project is to leverage a critical understanding of different visualization methods, across a series of disciplines, as diverse as Biology, Social Networks or the World Wide Web.", "Visualizing Economics is an web site dedicated to publishing infographics about economic data.", "Visual Loop is a blog to share all the immensity of data-visualizations and infographics that is made by Tiago. He say that it is a non-stop stream of Links to Infographics, Data Visualization and etc. and not to show good or bad designs.", "Visualising Data is a blog which is founded by Andy Kirk. He updates skills, techniques, educations, resources, applications and best practices about data visualization in the blog.", "Visualizing.org is a community of creative people working to make sense of complex issues through data and design and a shared space and free resource to help you achieve this goal. It was created by GE and Seed Media Group.", "Visual.ly collects the best examples of inforgraphic and data visualization on the web. And Designers could submit and promote their works.", "Vizzuality is a New York and Madrid based company and has been working with teams from Oxford University and NASA on a brand new project to find new planets outside our solar system.", "Visual Communication Lab in IBM ", "The blog of Moritz Stefaner, known for lots of projects around these parts. And he interested in information aesthetics, interactive visualization, and how the web transforms our understanding of information."]
+
+     var ref_URL = ["http://13pt.com/", "http://www.aaronkoblin.com/", "http://akaiving.com/", "http://www.alexislloyd.com/", "http://www.applieddatalabs.com/", "http://www.appliedworks.co.uk/", "http://www.atireiopaunografico.com.br/", "http://benfry.com/", "http://bestiario.org/", "http://bloom.io", "http://blog.blprnt.com/", "http://cartastrophe.wordpress.com/", "http://catalogtree.net", "http://www.jeromecukier.net/", "http://chartsbin.com/", "http://chartsnthings.tumblr.com/", "http://chartporn.org/", "http://civilstat.com/", "http://www.coolinfographics.com/", "http://complexdiagrams.com/", "http://data-art.net/", "http://datadrivenjournalism.net/", "http://www.guardian.co.uk/news/datablog", "http://www.data.gov/", "http://data.gov.uk/", "http://www.datajournalismblog.com/", "http://www.datapointed.net/", "http://datavisualization.ch/", "http://www.davidrumsey.com/", "http://designinganalytics.com", "http://densitydesign.org", "http://developmentseed.org/", "http://doctordata.wordpress.com/", "http://eagereyes.org/", "http://www.edwardtufte.com/tufte/", "http://blogs.forbes.com/naomirobbins/", "http://ejc.net/", "http://eyeofestival.com/", "http://www.excelcharts.com/blog/posts/", "http://fathom.info/", "http://feltron.tumblr.com/", "http://fellinlovewithdata.com/", "http://flinklabs.com", "http://www.floatingsheep.org/", "http://flowingdata.com/", "http://www.bewitched.com/", "http://indiemaps.com/blog/", "http://blog.infochimps.com/", "http://infographicsnews.blogspot.kr/", "http://info-graphics.kr/", "http://www.informationisbeautiful.net/", "http://interactivethings.com/", "http://ilovecharts.tumblr.com/", "http://infosthetics.com/", "http://jess3.com/", "http://vallandingham.me/", "http://www.number27.org/", "http://www.grootens.nl/", "http://datajournalism.stanford.edu/", "http://www.juiceanalytics.com/writing/", "http://junkcharts.typepad.com/junk_charts/", "http://kelsocartography.com/blog/", "http://www.mslima.com/myhome.cfm", "http://marumushi.com/", "http://maps.grammata.com/", "http://www.ericson.net/content/", "http://mahir.tumblr.com/", "http://monsterswell.com", "http://moritz.stefaner.eu/", "http://neoformix.com/", "http://nytlabs.com/", "http://selection.datavisualization.ch/", "http://periscopic.com", "http://pitchinteractive.com", "http://processing.org/", "http://www.randomwalks.org/", "http://blog.revolutionanalytics.com/", "http://casualdata.com/senseofpatterns/", "http://simplystatistics.org/", "https://sites.google.com/a/bizarre07.com/dfsc/data-visualization", "http://stamen.com", "http://www.theusrus.de/blog/", "http://mike.teczno.com/notes/", "http://thedailyviz.com/", "http://cartonerd.blogspot.com/", "http://blogs.wsj.com/numbersguy/", "http://www.theworldasflatland.net/", "http://www.thenetworkthinkers.com/", "http://tulpinspiration.tumblr.com/", "http://vis4.net/blog/", "http://www.perceptualedge.com/blog/", "http://www.visualcomplexity.com/", "http://visualizingeconomics.com/about-2/#.UC4-0ND9PGI", "http://visualoop.tumblr.com/", "http://www.visualisingdata.com/", "http://www.visualizing.org/", "http://visual.ly/", "http://www.vizzuality.com/", "http://thevcl.com/index.html", "http://well-formed-data.net/"]
+
+     var ref_Location = ["New York, USA", "San Francisco, USA", "Seoul, Korea", "New York, USA", "Plainfield, IL, USA", "London, UK", "Portugal", "Boston, USA", "Barcelona, Spain", "San Francisco, CA, USA", "New York, USA", "Madison, WI, USA", "Arnhem, Netherlands", "Somewhere on this Planet", "Adelaide, Australia", "New York, NY, USA", "Washington, DC, USA", "Census Bureau, USA", "Texas, USA", "Seattle, WA, USA", "London, UK", "Maastricht, Netherlands ", "London, UK", "Washington, DC, USA", "London, UK", "London, UK", "California, USA", "Zurich, Switzerland", "San Francisco, CA, USA", "Cambridge, USA", "Milano, Italy", "Washington, DC, USA", "San Francisco, CA, USA", "Seattle, WA, USA", "New Haven, USA", "New Jersey, USA", "Maastricht, Netherlands ", "Minneapolis, USA ", "Oeiras, Portugal", "Boston, USA ", "New York, USA", "Konstanz, Germany", "Melbourne, Australia", "Somewhere on this Planet", "California, USA", "Winchester, Massachusetts, USA", "Wisconsin, USA", "Austin, Texas, USA", "Madrid Area, Spain ", "Seoul, Korea", "London, UK", "Zurich, Switzerland", "New York, USA", "Leuven, Belgium", "Washington, D.C, USA", "Missouri, USA", "California, USA", "Amsterdam, Netherlands", "Somewhere on this Planet", "Reston, VA, USA", "New York, USA", "San Francisco, USA", "New York, USA", "San Francisco, USA", "New York, USA", "New York, NY, USA", "New York, USA", "Amsterdam, Netherlands", "Lilienthal, Germany", "Toronto, Canada", "New York, USA ", "Zurich, Switzerland", "Portland, USA", "Wisconsin, USA ", "Somewhere on this Planet", "Seoul, Korea", "San Francisco, CA, USA", "New York, USA", "USA", "Seoul, Korea", "San Francisco, USA", "Somewhere on this Planet", "San Francisco, USA", "Washington, D.C, USA", "Redlands, CA, USA", "Somewhere on this Planet", "Amsterdam, Netherlands", "Cleveland, Ohio, USA", "The Hague, The Netherlands ", "Germany", "Berkeley CA, USA", "New York, USA", "New York, USA", "Brazil", "Leeds, UK", "Somewhere on this Planet", "Somewhere on this Planet", "New York, USA", "USA", "Lilienthal, Germany"]
+
+  var ref_Lng = [-74.0059731, -122.41941550000001, 126.97796919999996, -74.0059731, -88.204069, -0.12768310000001293, -8.224454000000037, -71.0597732, 2.1699187000000393, -122.41941550000001, -74.0059731, -89.40123019999999, 5.898729600000024, 190.070313, 138.59994529999994, -74.0059731, -77.0363658, -76.9270133, -99.90181310000003, -122.3320708, -0.12768310000001293, 5.6909725000000435, -0.12768310000001293, -77.0363658, -0.12768310000001293, -0.12768310000001293, -119.41793239999998, 8.539182500000038, -122.41941550000001, -71.1097335, 9.186515999999983, -77.0363658, -122.41941550000001, -122.3320708, -72.92815769999999, -74.4056612, 5.6909725000000435, -93.26666999999998, -9.311896400000023, -71.0597732, -74.0059731, 9.173238399999946, 144.96305559999996, 188.070313, -119.41793239999998, -71.13699589999999, -88.78786780000001, -97.74306079999997, -3.7126639000000523, 126.97796919999996, -0.12768310000001293, 8.539182500000038, -74.0059731, 4.704328000000032, -77.0363658, -91.8318334, -119.41793239999998, 4.895167899999933, 188.070313, -77.35700279999998, -74.0059731, -122.41941550000001, -74.0059731, -122.41941550000001, -74.0059731, -74.0059731, -74.0059731, 4.895167899999933, 8.913357399999995, -79.38318429999998, -74.0059731, 8.539182500000038, -122.6762071, -88.78786780000001, 190.070313, 126.97796919999996, -122.41941550000001, -74.0059731, -95.71289100000001, 126.97796919999996, -122.41941550000001, 189.070313, -122.41941550000001, -77.0363658, -117.18253809999999, 187.070313, 4.895167899999933, -81.6954088, 4.3006999000000405, 10.451526000000058, -122.27274699999998, -74.0059731, -74.0059731, -51.92527999999999, -1.5485670000000482, 187.070313, 188.070313, -74.0059731, -95.71289100000001, 8.913357399999995]
+
+
+  var ref_Lat = [40.7143528, 37.7749295, 37.566535, 40.7143528, 41.615915, 51.5073346, 39.39987199999999, 42.3584308, 41.387917, 37.7749295, 40.7143528, 43.0730517, 51.9851034, 19.632784, -34.9287264, 40.7143528, 38.8951118, 38.846561, 31.9685988, 47.6062095, 51.5073346, 50.8513682, 51.5073346, 38.8951118, 51.5073346, 51.5073346, 36.778261, 47.3686498, 37.7749295, 42.3736158, 45.4654542, 38.8951118, 37.7749295, 47.6062095, 41.3081527, 40.0583238, 50.8513682, 44.983334, 38.6919392, 42.3584308, 40.7143528, 47.6779496, -37.8136111, 15.632784000000001, 36.778261, 42.452303, 43.7844397, 30.267153, 40.4465019, 37.566535, 51.5073346, 47.3686498, 40.7143528, 50.877571, 38.8951118, 37.9642529, 36.778261, 52.3702157, 17.632784, 38.9586307, 40.7143528, 37.7749295, 40.7143528, 37.7749295, 40.7143528, 40.7143528, 40.7143528, 52.3702157, 53.14912820000001, 43.653226, 40.7143528, 47.3686498, 45.5234515, 43.7844397, 18.632784, 37.566535, 37.7749295, 40.7143528, 37.09024, 37.566535, 37.7749295, 15.632784000000001, 37.7749295, 38.8951118, 34.0555693, 19.632784, 52.3702157, 41.4994954, 52.0704978, 51.165691, 37.8715926, 40.7143528, 40.7143528, -14.235004, 53.801279, 18.632784, 15.632784000000001, 40.7143528, 37.09024, 53.14912820000001]
+     
+     var ref_CountryCodeData = ["US", "US", "KR", "US", "US", "GB", "PT", "US", "ES", "US", "US", "US", "NL", "Not Results", "AU", "US", "US", "US", "US", "US", "GB", "NL", "GB", "US", "GB", "GB", "US", "CH", "US", "US", "IT", "US", "US", "US", "US", "US", "NL", "US", "PT", "US", "US", "DE", "AU", "Not Results", "US", "US", "US", "US", "ES", "KR", "GB", "CH", "US", "BE", "US", "US", "US", "NL", "Not Results", "US", "US", "US", "US", "US", "US", "US", "US", "NL", "DE", "CA", "US", "CH", "US", "US", "Not Results", "KR", "US", "US", "US", "KR", "US", "Not Results", "US", "US", "US", "Not Results", "NL", "US", "NL", "DE", "US", "US", "US", "BR", "GB", "Not Results", "Not Results", "US", "US", "DE"]
+
+     var ref_ContinentData = ["NA", "NA", "AS", "NA", "NA", "EU", "EU", "NA", "EU", "NA", "NA", "NA", "EU", "Not Results", "OC", "NA", "NA", "NA", "NA", "NA", "EU", "EU", "EU", "NA", "EU", "EU", "NA", "EU", "NA", "NA", "EU", "NA", "NA", "NA", "NA", "NA", "EU", "NA", "EU", "NA", "NA", "EU", "OC", "Not Results", "NA", "NA", "NA", "NA", "EU", "AS", "EU", "EU", "NA", "EU", "NA", "NA", "NA", "EU", "Not Results", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "NA", "EU", "EU", "NA", "NA", "EU", "NA", "NA", "Not Results", "AS", "NA", "NA", "NA", "AS", "NA", "Not Results", "NA", "NA", "NA", "Not Results", "EU", "NA", "EU", "EU", "NA", "NA", "NA", "SA", "EU", "Not Results", "Not Results", "NA", "NA", "EU"]
+
+    //data set to mine contrycode/continetcode
+     var countryCodeDataSet = ['AF', 'AL', 'AQ', 'DZ', 'AS', 'AD', 'AO', 'AG', 'AZ', 'AZ', 'AR', 'AU', 'AT', 'BS', 'BH', 'BD', 'AM', 'AM', 'BB', 'BE', 'BM', 'BT', 'BO', 'BA', 'BW', 'BV', 'BR', 'BZ', 'IO', 'SB ', 'VG', 'BN', 'BG', 'MM', 'BI', 'BY', 'KH', 'CM', 'CA', 'CV', 'KY', 'CF', 'LK', 'TD', 'CL', 'CN', 'TW', 'CX', 'CC', 'CO', 'KM', 'YT', 'CG', 'CD', 'CK', 'CR', 'HR', 'CU', 'CY', 'CY', 'CZ', 'BJ', 'DK', 'DM', 'DO', 'EC', 'SV', 'GQ', 'ET', 'ER', 'EE', 'FO', 'FK', 'GS', 'FJ', 'FI', 'AX', 'FR', 'GF', 'PF', 'TF', 'DJ', 'GA', 'GE', 'GE', 'GM', 'PS', 'DE', 'GH', 'GI', 'KI', 'GR', 'GL', 'GD', 'GP', 'GU', 'GT', 'GN', 'GY', 'HT', 'HM', 'VA', 'HN', 'HK', 'HU', 'IS', 'IN', 'ID', 'IR', 'IQ', 'IE', 'IL', 'IT', 'CI', 'JM', 'JP', 'KZ', 'KZ', 'JO', 'KE', 'KP', 'KR', 'KW', 'KG', 'LA', 'LB', 'LS', 'LV', 'LR', 'LY', 'LI', 'LT', 'LU', 'MO', 'MG', 'MW', 'MY', 'MV', 'ML', 'MT', 'MQ', 'MR', 'MU', 'MX', 'MC', 'MN', 'MD', 'ME', 'MS', 'MA', 'MZ', 'OM', 'NA', 'NR', 'NP', 'NL', 'AN', 'CW', 'AW', 'SX', 'BQ', 'NC', 'VU', 'NZ', 'NI', 'NE', 'NG', 'NU', 'NF', 'NO', 'MP', 'UM', 'UM', 'FM', 'MH', 'PW', 'PK', 'PA', 'PG', 'PY', 'PE', 'PH', 'PN', 'PL', 'PT', 'GW', 'TL', 'PR', 'QA', 'RE', 'RO', 'RU', 'RU', 'RW', 'BL', 'SH', 'KN', 'AI', 'LC', 'MF', 'PM', 'VC', 'SM', 'ST', 'SA', 'SN', 'RS', 'SC', 'SL', 'SG', 'SK', 'VN', 'SI', 'SO', 'ZA', 'ZW', 'ES', 'SS', 'EH', 'SD', 'SR', 'SJ', 'SZ', 'SE', 'CH', 'SY', 'TJ', 'TH', 'TG', 'TK', 'TO', 'TT', 'AE', 'TN', 'TR', 'TR', 'TM', 'TC', 'TV', 'UG', 'UA', 'MK', 'EG', 'GB', 'GG', 'JE', 'IM', 'TZ', 'US', 'VI', 'BF', 'UY', 'UZ', 'VE', 'WF', 'WS', 'YE', 'ZM', 'XX', 'XE', 'XD', 'XS']
+
+     var continentDataSet = ['AS', 'EU', 'AN', 'AF', 'OC', 'EU', 'AF', 'NA', 'EU', 'AS', 'SA', 'OC', 'EU', 'NA', 'AS', 'AS', 'EU', 'AS', 'NA', 'EU', 'NA', 'AS', 'SA', 'EU', 'AF', 'AN', 'SA', 'NA', 'AS', 'OC', 'NA', 'AS', 'EU', 'AS', 'AF', 'EU', 'AS', 'AF', 'NA', 'AF', 'NA', 'AF', 'AS', 'AF', 'SA', 'AS', 'AS', 'AS', 'AS', 'SA', 'AF', 'AF', 'AF', 'AF', 'OC', 'NA', 'EU', 'NA', 'EU', 'AS', 'EU', 'AF', 'EU', 'NA', 'NA', 'SA', 'NA', 'AF', 'AF', 'AF', 'EU', 'EU', 'SA', 'AN', 'OC', 'EU', 'EU', 'EU', 'SA', 'OC', 'AN', 'AF', 'AF', 'EU', 'AS', 'AF', 'AS', 'EU', 'AF', 'EU', 'OC', 'EU', 'NA', 'NA', 'NA', 'OC', 'NA', 'AF', 'SA', 'NA', 'AN', 'EU', 'NA', 'AS', 'EU', 'EU', 'AS', 'AS', 'AS', 'AS', 'EU', 'AS', 'EU', 'AF', 'NA', 'AS', 'EU', 'AS', 'AS', 'AF', 'AS', 'AS', 'AS', 'AS', 'AS', 'AS', 'AF', 'EU', 'AF', 'AF', 'EU', 'EU', 'EU', 'AS', 'AF', 'AF', 'AS', 'AS', 'AF', 'EU', 'NA', 'AF', 'AF', 'NA', 'EU', 'AS', 'EU', 'EU', 'NA', 'AF', 'AF', 'AS', 'AF', 'OC', 'AS', 'EU', 'NA', 'NA', 'NA', 'NA', 'NA', 'OC', 'OC', 'OC', 'NA', 'AF', 'AF', 'OC', 'OC', 'EU', 'OC', 'OC', 'NA', 'OC', 'OC', 'OC', 'AS', 'NA', 'OC', 'SA', 'SA', 'AS', 'OC', 'EU', 'EU', 'AF', 'AS', 'NA', 'AS', 'AF', 'EU', 'EU', 'AS', 'AF', 'NA', 'AF', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'EU', 'AF', 'AS', 'AF', 'EU', 'AF', 'AF', 'AS', 'EU', 'AS', 'EU', 'AF', 'AF', 'AF', 'EU', 'AF', 'AF', 'AF', 'SA', 'EU', 'AF', 'EU', 'EU', 'AS', 'AS', 'AS', 'AF', 'OC', 'OC', 'NA', 'AS', 'AF', 'EU', 'AS', 'AS', 'NA', 'OC', 'AF', 'EU', 'EU', 'AF', 'EU', 'EU', 'EU', 'EU', 'AF', 'NA', 'NA', 'AF', 'SA', 'AS', 'SA', 'OC', 'OC', 'AS', 'AF', 'OC', 'AS', 'AS', 'AS']
+
+
+
+  $.ajaxSetup({ cache: true });
+  jQuery.getJSON(
+          twitter_api_url + "&show_user:true&rpp="+numCircles+"&result_type=recent&callback=?",
+          function(data){
+              //console.log(data);
+              var addressList = [];
+
+              jQuery.each(data.results, function(i, tweet){
+
+              tweets.push(tweet.text);
+            fromUser.push(tweet.from_user);
+            fromUserName.push(tweet.from_user_name);
+            fromUserID.push(tweet.from_user_id_str);
+            tweetID.push(tweet.id_str);
+                        
+            jQuery.getJSON(
+            "http://api.twitter.com/1/statuses/show.json?id="+ tweetID[i] +"&include_entities=true"+"&callback=?",
+             function(datas){
+                          //sorting userLocation
+                         // var location = datas.location;
+                           //if(location == ""){
+                           // userLocation.push("Somewhere");
+                          // }else{
+                           userLocation[i] = datas.user.location;
+                           retweetCount[i] = datas.retweet_count;
+                            if(datas.retweeted_status != null){
+                                 oriUserID[i] = datas.retweeted_status.user.id_str;
+                              }else{
+                                   oriUserID[i] = datas.user.id_str;
+                              }
+                           console.log(i+"k");
+                           console.log(fromUser+"4");
+               console.log(userLocation+"4");
+               console.log(retweetCount+"R");
+               //console.log(oriUserID+"oriUserID");
+                          //}
+
+
+                          //making addressList
+              var addressSplit = userLocation[i].split(" ");
+              var addressJoin = addressSplit.join("+");
+              addressList[i] = addressJoin;
+              
+              countAddress.push(addressJoin);
+              
+                            if (countAddress.length < numCircles) {
+                              realTimeData = false;
+                            }
+              else if (geocoder && countAddress.length == numCircles) {
+                realTimeData = true;
+                console.log(countAddress.length+realTimeData)
+                //addressList 
+                geocoding()               
+              }
+              
+              });
+
+                           function geocoding(){
+                           //console.log(addressList[0]+"dddd");
+                     var index = 0; 
+                     var geocoderFunction = function () {   
+                     console.log(index);
+                     geocoder.geocode({ 'address':addressList[index] }, function (results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                          
+                            var addressList_lng = results[0].geometry.location.lng();
+                            var addressList_lat = results[0].geometry.location.lat();
+                            var country;
+                            var codeIndex;
+                            var continentSort;
+                            var formattedAddress = results[0].formatted_address;
+
+                      for (i=0;i<results[0].address_components.length;i++){
+                          for (j=0;j<results[0].address_components[i].types.length;j++){
+                             if(results[0].address_components[i].types[j]=="country")
+                            country = results[0].address_components[i].short_name
+                          }
+                      }
+
+                      for (j=0;j<262;j++){
+                        if(countryCodeDataSet[j]==country)
+                        {
+                          codeIndex = j;
+                          continentSort = continentDataSet[codeIndex];
+                        }
+                      }
+                      
+                                            if(country == null)
+                                            {
+
+                                             twitLng.push(192.070313+random(-5,5));
+                           twitLat.push(20.632784+random(-5,5));
+                           countryCode.push("Not Results");
+                           continentCode.push("Not Results");
+                           addressCode.push("Somewhere on this Planet");
+
+                                            }else{
+
+                             twitLng.push(addressList_lng);
+                           twitLat.push(addressList_lat); 
+                           countryCode.push(country);
+                           continentCode.push(continentSort);
+                           addressCode.push(formattedAddress);
+                           //console.log(country);
+                         //console.log(addressList_lat);
+                         }
+
+                        } 
+                         else {
+                               twitLng.push(192.070313+random(-5,5));
+                           twitLat.push(20.632784+random(-5,5));
+                           countryCode.push("Not Results");
+                           continentCode.push("Not Results");
+                           addressCode.push("Somewhere on this Planet");
+                         }
+ 
+                             
+                          // realtwitLocation(); 
+                          // continentDisplay();
+                          if (twitLat.length == numCircles) {
+                            console.log("dataReceived");
+                            console.log(twitLat.length+"+"+numCircles);
+                            dataReceived = true;
+                            realtwitLocation(); 
+                            continentDisplay();
+                            
+                      }
+                      
+                          console.log(tweets);
+                            console.log(fromUser);
+                            console.log(fromUserName);
+                            console.log(userLocation);
+                                              console.log(addressList);
+                                              console.log(twitLng);
+                            console.log(twitLat);
+                            console.log(countryCode);
+                            console.log(continentCode);
+                            console.log(addressCode);
+                            console.log(tweetID);
+                            console.log(retweetCount);
+                            console.log(fromUserID+"fromUserID");
+                                  console.log(oriUserID+"oriUserID")
+                        });
+
+                       // Call the geocoder with a 100ms delay
+                           index++;
+                           if (addressList.length > index) {
+                              setTimeout(geocoderFunction, 1000);
+                     }
+                  }
+                  // Launch the geocoding process
+                      geocoderFunction();
+
+                 }                
+                 });
+                 if (dataReceived != true){
+                    // alert(jtwitLat);
+                }
+               });
+
+  void setup() 
+  {
+    
+      background(0);
+      size(1024, 686);  // Size should be the first statement
+      //stroke(255);     // Set line drawing color to white
+      frameRate(30);
+      smooth();
+      textFont(font); 
+      worldMap = loadImage("http://hyemisong.com/datavislovers/WorldMap.jpg");
+      detail_btn_0 = loadImage("detail_btn.png");
+      detail_btn_1 = loadImage("detail_btn_3.png");
+      detail_btn_3 = loadImage("detail_btn_4.png");
+
+         //reference data
+    rowCount = numrCircles; 
+
+    //reference twit circle/list location
+    for (int rowcount = 0; rowcount < rowCount; rowcount++) { 
+
+        //circle location
+        float lng = ref_Lng[rowcount];
+        float lat = ref_Lat[rowcount];  //(1000*(lng + 180)/360)+12;
+
+        float conP = (500*lng/360) + (500*180/360)+5+256;
+        float conQ = (250-((250*lat/180) + (250*90/180)))+45+381;
+        
+
+        conQList.add(conQ);
+        conPList.add(conP);
+
+        rcircles[rowcount] = new rCircle(conP, conQ); 
+        
+      }
+
+    for(int j=0; j<divide; j++){
+        eachStart[j]=start+((width-start)/divide)*j;
+      }   
+
+      int[] mapX = {390,430,525,550,650,700,780};
+      int[] mapY = {480,580,470,560,490,580,520};
+
+    for(int h=0; h<numArea; h++){
+
+      mapArea[h] = new MapArea(mapX[h],mapY[h]);
+      } 
+
+    Ref_ContinentDisplay();
+  realtwitLocation();
+  continentDisplay();
+
+  }
+
+  void realtwitLocation()
+  {    
+        
+
+    if(dataReceived != true){
+
+                for (int i = 0; i < numCircles; i++) {
+
+            float lng = jtwitLng[i];
+            float lat = jtwitLat[i];
+                 
+                float twitMapLng = (500*lng/360) + (500*180/360)+5+256;
+            float twitMapLat = (250-((250*lat/180) + (250*90/180)))+45+381;
+
+            circles[i] = new Circle(twitMapLng, twitMapLat);
+            
+            }
+
+                
+    }else{
+
+                    for (int i = 0; i < numCircles; i++) {
+
+            float lng = twitLng[i];
+            float lat = twitLat[i];
+             
+                float twitMapLng = (500*lng/360) + (500*180/360)+5+256;
+            float twitMapLat = (250-((250*lat/180) + (250*90/180)))+45+381;
+
+            circles[i] = new Circle(twitMapLng, twitMapLat);
+
+              }
+              
+            }
+  }
+
+
+
+  void Ref_ContinentDisplay()
+  {
+
+    int NAindex;
+    int SAindex;
+    int AFindex;
+    int EUindex;    
+    int ASindex;
+    int OCindex;
+    int NRindex;
+    int Index;
+        int Xcount;
+        int Ycount; 
+        int x;
+        int y;
+        
+    int startPointX;
+    int startPointY = height-390+dim;
+
+      for (int i = 0; i < numrCircles; i++) {
+
+        String continentDatas = ref_ContinentData[i];
+        int index = i;
+
+              if(continentDatas=="NA"){
+              startPointX = eachStart[0];
+              NAindex++;
+              Index = NAindex-1;
+              rNAindexConArr.add(index);
+            }else if(continentDatas=="SA"){
+              startPointX = eachStart[1];
+              SAindex++;
+              Index = SAindex-1;
+              rSAindexConArr.add(index);
+            }else if(continentDatas=="EU"){
+              startPointX = eachStart[2];
+              EUindex++;
+              Index = EUindex-1;
+              rEUindexConArr.add(index);
+            }else if(continentDatas=="AF"){
+              startPointX = eachStart[3];
+              AFindex++;
+              Index = AFindex-1;
+              rAFindexConArr.add(index);
+            }else if(continentDatas=="AS"){
+              startPointX = eachStart[4];
+              ASindex++;
+              Index = ASindex-1;
+              rASindexConArr.add(index);
+            }else if(continentDatas=="OC"){
+              startPointX = eachStart[5];
+              OCindex++;
+              Index = OCindex-1;
+              rOCindexConArr.add(index);
+            }else if(continentDatas=="Not Results"){
+              startPointX = eachStart[6];
+              NRindex++;
+              Index = NRindex-1;
+              rNRindexConArr.add(index);
+              }
+
+                Ycount = int((Index/numOfDot)+1);
+            Xcount = Index-int(numOfDot*Ycount-numOfDot)+1;
+            
+            x = startPointX+dim*(Xcount-1)+Xcount;
+            y = startPointY+dim*(Ycount-1)+Ycount;
+                
+
+            rlists[i] = new rList(x, y);
+       
+     }
+  }
+
+  void continentDisplay()
+  {
+
+    int startPointX;
+    int startPointY = height-390;   
+    int Index;
+    int Xcount;
+        int Ycount; 
+        int x;
+        int y;
+
+
+          if(dataReceived != true){
+          for (int i = 0; i < numCircles; i++){
+
+          int[] tListPosition_Vals = {continentData[i],0,0,i};
+              int[] tLP_Result = tListPosition(tListPosition_Vals);
+
+              Index = tLP_Result[1];
+              startPointX = tLP_Result[2];
+
+            Ycount = int((Index/numOfDot)+1);
+            Xcount = Index-int(numOfDot*Ycount-numOfDot)+1;
+  
+            x = startPointX+dim*(Xcount-1)+Xcount;
+            y = startPointY-dim*(Ycount-1)-Ycount;
+
+            tlists[i] = new tList(x, y);
+            // console.log(NAindexConArr.length, ",", SAindexConArr.length, ",", AFindexConArr.length, ",", EUindexConArr.length,",", ASindexConArr.length,",", OCindexConArr.length,",", NRindexConArr.length);
+            // console.log(NAindexConArr);
+            // console.log(NAindexCon+"t");
+            // console.log(NAindexConArr+"t");
+           }     
+    
+      }else{  
+
+            NAindexCon = 0;
+        SAindexCon = 0;
+        AFindexCon = 0;
+        EUindexCon = 0;   
+        ASindexCon = 0;
+        OCindexCon = 0;
+        NRindexCon = 0;
+
+        NAindexConArr.clear();
+        SAindexConArr.clear();
+        AFindexConArr.clear();
+        EUindexConArr.clear();
+        ASindexConArr.clear();
+        OCindexConArr.clear();
+        NRindexConArr.clear();
+
+        
+              for (int i = 0; i < numCircles; i++){
+            
+              int[] tListPosition_Vals = {continentCode[i],0,0,i};
+              int[] tLP_Result = tListPosition(tListPosition_Vals);
+
+              Index = tLP_Result[1];
+              startPointX = tLP_Result[2];
+               
+                Ycount = int((Index/numOfDot)+1);
+            Xcount = Index-int(numOfDot*Ycount-numOfDot)+1;
+
+            x = startPointX+dim*(Xcount-1)+Xcount;
+            y = startPointY-dim*(Ycount-1)-Ycount;
+
+            tlists[i] = new tList(x, y);
+            console.log(NAindexCon);
+            console.log(NAindexConArr);
+         }
+      }
+    }
+
+    int[] tListPosition(int[] dVals) {
+
+      String continentDatas = dVals[0];
+
+      if(continentDatas=="NA"){
+        dVals[2] = eachStart[0];
+        NAindexCon++;
+        dVals[1] = NAindexCon-1;
+        NAindexConArr.add(dVals[3]);
+      }else if(continentDatas=="SA"){
+        dVals[2] = eachStart[1];
+        SAindexCon++;
+        dVals[1] = SAindexCon-1;
+        SAindexConArr.add(dVals[3]);
+      }else if(continentDatas=="EU"){
+        dVals[2] = eachStart[2];
+        EUindexCon++;
+        dVals[1] = EUindexCon-1;
+        EUindexConArr.add(dVals[3]);
+      }else if(continentDatas=="AF"){
+        dVals[2] = eachStart[3];
+        AFindexCon++;
+        dVals[1] = AFindexCon-1;
+        AFindexConArr.add(dVals[3]);
+      }else if(continentDatas=="AS"){
+        dVals[2] = eachStart[4];
+        ASindexCon++;
+        dVals[1] = ASindexCon-1;
+        ASindexConArr.add(dVals[3]);
+      }else if(continentDatas=="OC"){
+        dVals[2] = eachStart[5];
+        OCindexCon++;
+        dVals[1] = OCindexCon-1;
+        OCindexConArr.add(dVals[3]);
+      }else if(continentDatas=="Not Results"){
+        dVals[2] = eachStart[6];
+        NRindexCon++;
+        dVals[1] = NRindexCon-1;
+        NRindexConArr.add(dVals[3]);
+      }
+          return dVals; 
+    }
+
+  void draw() 
+  { 
+      basicUI();
+      mouseover();
+      
+     //Title
+      noStroke();
+      fill(0,185,248);
+      for(i=0; i<5; i++)
+      {
+        for(j=0; j<3; j++){
+        ellipse(2+4*i,2+4*j,2,2);
+        }
+      }
+      fill(255,56,17);
+      for(i=0; i<5; i++)
+      {
+        for(j=0; j<3; j++){
+        ellipse(2+4*i,14+4*j,2,2);
+        }
+      }
+          
+          fill(0,185,248);
+      for(i=0; i<2; i++)
+      {
+        for(j=0; j<3; j++){
+        ellipse(width-60+4*i,2+4*j,2,2);
+        }
+      }
+      fill(255,56,17);
+      for(i=0; i<2; i++)
+      {
+        for(j=0; j<3; j++){
+        ellipse(width-60+4*i,14+4*j,2,2);
+        }
+      }
+
+          
+      fill(255);
+      textSize(13);
+      String s = "Here, Data Visualization Lovers are!";
+      text(s, 28, 17); 
+
+         //draw twit circle
+      for (int j = 0; j < numCircles; j++) {
+        circles[j].display();
+         }
+
+     //draw reference circle
+      for (int rowcount = 0; rowcount < rowCount; rowcount++) { 
+        rcircles[rowcount].display();
+          }
+      
+     //Click the List and Display Detail Description 
+        referencesList();
+        twitsList();
+        areaSelect();
+        
+     if (refDetail == true)
+        {
+          refDetails();
+          twitDetail = false;
+        }
+
+     if (twitDetail == true)
+        {
+          twitDetails();
+          refDetail = false;
+        } 
+     
+     if(continentClicked == false)
+        {
+          listDimReset();
+        }
+
+        //console.log(continentClicked);
+  }
+
+  void areaSelect()
+  {
+    
+      if(mapArea[0].isTouched()==true)
+      { 
+                selectedNum = 0;
+                listOverInfo();
+                mapArea[0].display();
+
+      }
+      else{
+        selectedNum = 8;
+      }
+
+      if(mapArea[1].isTouched()==true)
+      { 
+                selectedNum = 1;
+                listOverInfo();
+                mapArea[1].display();
+      }
+
+      if(mapArea[2].isTouched()==true)
+      { 
+                selectedNum = 2;
+                listOverInfo();
+                mapArea[2].display();
+      }
+
+      if(mapArea[3].isTouched()==true)
+      { 
+                selectedNum = 3;
+                listOverInfo();
+                mapArea[3].display();
+      }
+
+      if(mapArea[4].isTouched()==true)
+      { 
+                selectedNum = 4;
+                listOverInfo();
+                mapArea[4].display();
+      }
+
+      if(mapArea[5].isTouched()==true)
+      { 
+                selectedNum = 5;
+                listOverInfo();
+                mapArea[5].display();
+      }
+
+      if(mapArea[6].isTouched()==true)
+      { 
+                selectedNum = 6;
+                listOverInfo();
+                mapArea[6].display();
+      }
+      
+      
+    }
+
+    void listOverInfo(){
+
+      int i = selectedNum;
+
+      //continentInfo   
+    fill(255);  
+        noStroke();
+    textAlign(RIGHT);
+    textSize(13);
+    String name = tAreaIndexArr[i].length+" "+"Tweets"+" and "+rAreaIndexArr[i].length+" "+"References";
+    float sw = textWidth(name);
+    rect(mapArea[i].x-50, mapArea[i].y-15, -(sw+65), -20);
+
+    fill(0);
+    text(tAreaIndexArr[i].length+" "+"Tweets"+" and "+rAreaIndexArr[i].length+" "+"Reference Links", mapArea[i].x-80, mapArea[i].y-20);
+        
+        
+        fill(255);
+    beginShape(TRIANGLES);
+    vertex(mapArea[i].x-50, mapArea[i].y-15-20);
+    vertex(mapArea[i].x, mapArea[i].y);
+    vertex(mapArea[i].x-50, mapArea[i].y-15-15);
+    endShape();
+    stroke(100);
+    line(mapArea[i].x-50-sw-65, mapArea[i].y-15-20, eachStart[i]-3, height-322);    
+
+    }
+
+  void listDimUpdate()
+  {
+       int i = selectedNum;
+      for (int j = 0; j < numCircles; j++) {
+               tlists[j].dim = 1;
+           }
+
+      for (int j = 0; j < numrCircles; j++) {
+               rlists[j].dim = 1;
+           }
+
+        String tSortIndex = tAreaIndexArr[i];
+      for(j=0; j<tSortIndex.length; j++){
+            int sortList = tSortIndex[j];
+            tlists[sortList].dim = 7.5;
+           }
+
+    String rSortIndex = rAreaIndexArr[i];
+      for(j=0; j<rSortIndex.length; j++){
+            int sortList = rSortIndex[j];
+            rlists[sortList].dim = 7.5;
+           }          
+  }
+
+
+  void listDimReset()
+  {
+      for (int j = 0; j < numCircles; j++) {
+               tlists[j].dim = 7.5;
+           }
+      for (int i = 0; i < numrCircles; i++) {
+               rlists[i].dim = 7.5;
+           }     
+    }
+
+  void twitDetails()
+  {     
+    int heightCal = 555;
+    
+
+      noStroke();
+      fill(22);
+      rect(width/2-300, height-heightCal-35, 590, 113);
+
+      if (listBTNOver == true) {
+       //listBTN
+      image(detail_btn_1, width/2-316+12, height-heightCal-39, 12, 12); 
+      }
+      else {
+      image(detail_btn_0, width/2-316+12, height-heightCal-39, 12, 12);   
+      }
+
+
+      if (linkBTNOver == true) {
+       //linkBTN
+      fill(255);
+      }
+      else {
+      fill(0,185,248);
+      }
+
+          textAlign(RIGHT);
+      textSize(12);     
+      text("+ more",width/2-300+582-5, height-heightCal-24+100-10);
+       
+          if(dataReceived != true){
+          //List value return
+          int j =selectedTwit(selectedTwitNum);
+            String twitUserLocation = juserLocation[j];
+            String twitFromUserName = jfromUserName[j];
+            String twitText = jtweets[j];
+            String locName = juserLocation[j];
+            String RTString = jretweetCount[j];
+            float NumofRT = jretweetCount[j];
+            float maxRT = max(jretweetCount);
+            float NumOriUserID = joriUserID[j];
+            float NumFromUserID = jfromUserID[j];
+            
+
+            }else{
+              //List value return
+          int j =selectedTwit(selectedTwitNum);
+            String twitUserLocation = addressCode[j];
+            String twitFromUserName = fromUserName[j];
+            String twitText = tweets[j];
+            String locName = addressCode[j];
+            String RTString = retweetCount[j];
+            float NumofRT = retweetCount[j];
+            float maxRT = max(retweetCount);
+            float NumOriUserID = oriUserID[j];
+            float NumFromUserID = fromUserID[j];
+
+            }
+
+          //name,location
+      fill(0,185,248);
+      textAlign(LEFT);
+      textSize(20);
+      text(twitFromUserName, width/2-280-3, height-heightCal-4);
+      String name = twitFromUserName;
+      float sw = textWidth(name);
+      textSize(13);
+      text("at"+" "+twitUserLocation, width/2-280+sw+5-3, height-heightCal-14,400,15);
+      fill(255);
+      text(twitText, width/2-280-3, height-heightCal+8-4, 560, 50);
+
+          
+          if(NumofRT>0 && NumOriUserID == NumFromUserID){
+          float RTWidth = textWidth(RTString); 
+      textAlign(LEFT);
+      textSize(11);
+      noStroke();
+      fill(120);
+      text(RTString+" "+"Retweeted", width/2-280-3, height-heightCal-24+100-10);
+      
+      }else if(NumofRT == maxRT && maxRT>9){
+      float RTWidth = textWidth(RTString); 
+      textAlign(LEFT);
+      textSize(11);
+      noStroke();
+      fill(120);
+      text("Original tweet has been retweeted "+RTString+" times", width/2-280-3, height-heightCal-24+100-10);
+    }
+
+     
+  }
+
+
+  void refDetails()
+  {
+    int heightCal = 555;
+    
+
+      noStroke();
+      fill(22);
+      rect(width/2-300, height-heightCal-35, 590, 113);
+
+      if (listBTNOver == true) {
+       //listBTN
+      image(detail_btn_1, width/2-316+12, height-heightCal-39, 12, 12); 
+      }
+      else {
+      image(detail_btn_3, width/2-316+12, height-heightCal-39, 12, 12);   
+      }
+      
+
+      if (linkBTNOver == true) {
+       //linkBTN
+      fill(255);
+      }
+      else {
+      fill(255,56,17);
+      }
+
+          textAlign(RIGHT);
+      textSize(12);     
+      text("+ more",width/2-300+582-5, height-heightCal-24+100-10);
+       
+
+          int i =selectedRef(selectedRefNum);
+      fill(255,56,17);
+      textAlign(LEFT);
+      textSize(20);
+      text(ref_Name[i], width/2-280-3, height-heightCal-4);
+      String name = ref_Name[i];
+      float sw = textWidth(name);
+      textSize(13);
+      text("at"+" "+ref_Location[i], width/2-280+sw+5-3, height-heightCal-14,400,15);
+      fill(255);
+      text(ref_Description[i], width/2-280-3, height-heightCal+8-4, 560, 50);
+
+
+
+  }
+
+  int selectedTwit(int dselectedTwitNum) {
+        dselectedTwitNum = m;
+        return dselectedTwitNum;
+  }
+
+  int selectedRef(int dselectedRefNum) {
+        dselectedRefNum = n;
+        return dselectedRefNum;
+  }
+
+  void referencesList()
+    {
+
+     for (int rowcount = 0; rowcount < rowCount; rowcount++) { 
+       rlists[rowcount].display();
+         // console.log(rlists.length);
+
+       if (rlists[rowcount].isTouched()) {
+        String locName = ref_Location[rowcount];
+        String name = ref_Name[rowcount];
+        float locNameWidth = textWidth(locName);
+        float x = conPList.get(rowcount);
+        float y = conQList.get(rowcount);
+        rlists[rowcount].c = color(50, 50, 0);
+        
+        fill(255, 245, 0, 50);
+        ellipse(x, y, 30,30);
+        fill(255,56,17);
+        rect(x+24, y-8, locNameWidth+20, 16);      
+        ellipse(x, y,6,6);
+        triangle(x, y, x+24, y+8, x+24, y-8);
+        
+        textAlign(LEFT);
+        textSize(13);
+
+
+        //rcircles Text
+        fill(0);
+        text("at"+" "+locName, conPList.get(rowcount)+24, conQList.get(rowcount)-5, 250, 200);
+        
+
+          //List value return
+        var dataIndex = rowcount;
+        int[] listAreaVals = {ref_ContinentData[dataIndex],0,0};
+          int[] rResult = listArea(listAreaVals);
+
+        //rlists Text
+        fill(255,56,17);
+        text(name, rResult[2]-3, height-390-(rResult[1]+1)*dim-20, 250, 200);
+       
+
+        line(conPList.get(rowcount), conQList.get(rowcount),rlists[rowcount].x, rlists[rowcount].y);
+       }
+       else {
+              rlists[rowcount].c = color(255,56,17);
+            }
+
+          if(rlists[rowcount].clicked == true){
+            rlists[rowcount].c = color(50, 50, 0);
+          }
+      }
+    }
+
+  void twitsList() 
+  {
+    color boxColor;
+
+    for (int j = 0; j < numCircles; j++) {
+       tlists[j].display();
+
+        if(dataReceived != true){
+          //List value return
+          int dataIndex = j;
+          int[] listAreaVals = {continentData[dataIndex],0,0};
+            int[] tResult = listArea(listAreaVals);
+            String twitUserLocation = juserLocation[j];
+            String twitFromUserName = jfromUserName[j];
+            String locName = juserLocation[j];
+            String RTString = jretweetCount[j];
+            float maxRT = max(jretweetCount);
+            float NumofRT = jretweetCount[j];
+            float NumOriUserID = joriUserID[j];
+            float NumFromUserID = jfromUserID[j];
+
+
+              if (tlists[j].isTouched()) {
+
+                    float locNameWidthPre = textWidth(locName);       
+              if(locNameWidthPre < 600){
+                float locNameWidth = locNameWidthPre;
+              }else{
+                float locNameWidth = 600;
+              }
+
+              float x = circles[j].x;
+              float y = circles[j].y;
+
+                      if(NumofRT == maxRT && maxRT>9){
+                tlists[j].c = color(130,0,46);
+                tlists[j].maxColor = color(255);
+                boxColor = color(255,255,0);
+            }else{
+              tlists[j].c = color(39, 58, 73);
+              boxColor = color(0,185,248);
+            }
+
+              stroke(0,185,248); 
+              fill(134, 232, 250, 50);
+              ellipse(x, y, 30,30);
+              fill(0,185,248);
+              rect(x+24, y-8, locNameWidth+20, 16);  
+              ellipse(x, y, 6,6);
+              triangle(x, y, x+24, y+8, x+24, y-8);
+
+              fill(0);
+              textAlign(LEFT);
+              textSize(13);
+              text("at"+" "+twitUserLocation,circles[j].x+24,circles[j].y-5, 600, 13);
+              
+              fill(0,185,248);
+              text(twitFromUserName,tResult[2]-3,height-390-(tResult[1]+1)*dim-20, 250, 200);
+              stroke(0,185,248);
+              strokeWeight(0.5);
+              line(circles[j].x, circles[j].y, tlists[j].x, tlists[j].y);
+            
+            if(NumofRT>0 && NumOriUserID == NumFromUserID){
+              float RTWidth = textWidth(RTString); 
+              float twitWidth = textWidth(twitFromUserName);
+
+              textSize(11);
+              noStroke();
+                        fill(boxColor);
+                        //rect(tResult[2]-3,height-390-(tResult[1]+1)*dim-35, RTWidth+20, 11);
+                rect(twitWidth+tResult[2]+3,height-392-(tResult[1]+1)*dim-19, RTWidth+20, 12);
+                fill(0);
+                //text(jretweetCount[j]+" "+"RT",tResult[2]-2,height-390-(tResult[1]+1)*dim-33, 250, 200);
+                text(jretweetCount[j]+" "+"RT",twitWidth+tResult[2]+5,height-390-(tResult[1]+1)*dim-19, 250, 200);
+
+              }else if(NumofRT == maxRT && maxRT>9){
+              float RTWidth = textWidth(RTString); 
+              float twitWidth = textWidth(twitFromUserName);
+
+              textSize(11);
+              noStroke();
+                        fill(boxColor);
+                        //rect(tResult[2]-3,height-390-(tResult[1]+1)*dim-35, RTWidth+20, 11);
+                rect(twitWidth+tResult[2]+3,height-392-(tResult[1]+1)*dim-19, RTWidth+20, 12);
+                fill(0);
+                //text(jretweetCount[j]+" "+"RT",tResult[2]-2,height-390-(tResult[1]+1)*dim-33, 250, 200);
+                text(jretweetCount[j]+" "+"RT",twitWidth+tResult[2]+5,height-390-(tResult[1]+1)*dim-19, 250, 200);
+            }
+              console.log(jretweetCount[j]);
+
+
+                }else if(tlists[j].isTouched() == false && NumofRT == 0){
+                       tlists[j].c = color(0,185,248);
+
+                }else if(tlists[j].isTouched() == false && NumofRT > 0 && NumofRT != maxRT && NumOriUserID == NumFromUserID){
+                   tlists[j].c = color(255);
+                 //       tlists[j].maxColor = color(255,255,0);  
+                     //tlists[j].c = color(51,191,130);
+                       tlists[j].maxColor = color(0,185,248);
+
+                }else if(tlists[j].isTouched() == false && NumofRT > 0 && NumofRT == maxRT && maxRT>9){
+                       tlists[j].c = color(255,255,0);
+                       tlists[j].maxColor = color(255,255,0);
+
+              }else if(tlists[j].isTouched() == false && NumofRT > 0){
+                       tlists[j].c = color(0,185,248);
+                }
+                     
+
+        }else{
+
+           //List value return
+        int dataIndex = j;
+        int[] listAreaVals = {continentCode[dataIndex],0,0};
+          int[] tResult = listArea(listAreaVals);
+          String twitUserLocation = addressCode[j];
+              String twitFromUserName = fromUserName[j]; 
+              String locName = addressCode[j];
+              String RTString = retweetCount[j];
+              float maxRT = max(retweetCount);
+            float NumofRT = retweetCount[j];
+            float NumOriUserID = oriUserID[j];
+            float NumFromUserID = fromUserID[j];
+
+
+          if (tlists[j].isTouched()) {
+
+                    float locNameWidthPre = textWidth(locName);       
+              if(locNameWidthPre < 600){
+                float locNameWidth = locNameWidthPre;
+              }else{
+                float locNameWidth = 600;
+              }
+
+              float x = circles[j].x;
+              float y = circles[j].y;
+
+              if(NumofRT == maxRT && maxRT>9){
+                tlists[j].c = color(130,0,46);
+                tlists[j].maxColor = color(255);
+                boxColor = color(255,255,0);
+            }else{
+              tlists[j].c = color(39, 58, 73);
+              boxColor = color(0,185,248);
+            }
+
+              
+              stroke(0,185,248); 
+              fill(134, 232, 250, 50);
+              ellipse(x, y, 30,30);
+              fill(0,185,248);
+              rect(x+24, y-8, locNameWidth+20, 16);  
+              ellipse(x, y, 6,6);
+              triangle(x, y, x+24, y+8, x+24, y-8);
+
+              fill(0);
+              textAlign(LEFT);
+              textSize(13);
+              text("at"+" "+twitUserLocation,circles[j].x+24,circles[j].y-5, 600, 13);
+              
+              fill(0,185,248);
+              text(twitFromUserName,tResult[2]-3,height-390-(tResult[1]+1)*dim-20, 250, 200);
+              stroke(0,185,248);
+              strokeWeight(0.5);
+              line(circles[j].x, circles[j].y, tlists[j].x, tlists[j].y);
+
+                      if(NumofRT>0 && NumOriUserID == NumFromUserID){
+              float RTWidth = textWidth(RTString); 
+              float twitWidth = textWidth(twitFromUserName);
+
+              textSize(11);
+              noStroke();
+                        fill(boxColor);
+                        //rect(tResult[2]-3,height-390-(tResult[1]+1)*dim-35, RTWidth+20, 11);
+                rect(twitWidth+tResult[2]+3,height-392-(tResult[1]+1)*dim-19, RTWidth+20, 12);
+                fill(0);
+                //text(jretweetCount[j]+" "+"RT",tResult[2]-2,height-390-(tResult[1]+1)*dim-33, 250, 200);
+                text(retweetCount[j]+" "+"RT",twitWidth+tResult[2]+5,height-390-(tResult[1]+1)*dim-19, 250, 200);
+                
+              }else if(NumofRT == maxRT && maxRT>9){
+              float RTWidth = textWidth(RTString); 
+              float twitWidth = textWidth(twitFromUserName);
+
+              textSize(11);
+              noStroke();
+                        fill(boxColor);
+                        //rect(tResult[2]-3,height-390-(tResult[1]+1)*dim-35, RTWidth+20, 11);
+                rect(twitWidth+tResult[2]+3,height-392-(tResult[1]+1)*dim-19, RTWidth+20, 12);
+                fill(0);
+                //text(jretweetCount[j]+" "+"RT",tResult[2]-2,height-390-(tResult[1]+1)*dim-33, 250, 200);
+                text(retweetCount[j]+" "+"RT",twitWidth+tResult[2]+5,height-390-(tResult[1]+1)*dim-19, 250, 200);
+            }
+              console.log(jretweetCount[j]);
+
+
+             }else if(tlists[j].isTouched() == false && NumofRT == 0){
+                       tlists[j].c = color(0,185,248);
+
+               }else if(tlists[j].isTouched() == false && NumofRT > 0 && NumofRT != maxRT && NumOriUserID == NumFromUserID){
+                   tlists[j].c = color(255);
+                 //       tlists[j].maxColor = color(255,255,0);  
+                     //tlists[j].c = color(51,191,130);
+                       tlists[j].maxColor = color(0,185,248);
+               }else if(tlists[j].isTouched() == false && NumofRT > 0 && NumofRT == maxRT && maxRT>9){
+                       tlists[j].c = color(255,255,0);
+                       tlists[j].maxColor = color(255,255,0);
+
+             }else if(tlists[j].isTouched() == false && NumofRT > 0){
+                       tlists[j].c = color(0,185,248);
+               }
+
+             }
+
+                    if(tlists[j].clicked == true){
+                      if(NumofRT == maxRT && maxRT>9){
+                          tlists[j].c = color(130,0,46);
+                          tlists[j].maxColor = color(255);
+                      }else if(NumofRT > 0 && NumofRT != maxRT && NumOriUserID == NumFromUserID){
+                        tlists[j].c = color(255,255,255,80);
+                        tlists[j].maxColor = color(255);
+                      }else{
+                        tlists[j].c = color(39, 58, 73);
+                      }
+                       
+           }
+        }
+    }
+    
+
+
+    int[] listArea(int[] dVals) {
+
+      String continentDatas = dVals[0];
+      
+          if(continentDatas=="NA"){ 
+              dVals[1] = int(NAindexCon/15);
+              dVals[2] = eachStart[0];
+            }else if(continentDatas=="SA"){
+              
+              dVals[1] = int(SAindexCon/15);
+              dVals[2] = eachStart[1];
+            }else if(continentDatas=="EU"){
+              
+              dVals[1] = int(EUindexCon/15);
+              dVals[2] = eachStart[2];
+            }else if(continentDatas=="AF"){
+              
+              dVals[1] = int(AFindexCon/15);
+              dVals[2] = eachStart[3];
+            }else if(continentDatas=="AS"){
+              
+              dVals[1] = int(ASindexCon/15);
+              dVals[2] = eachStart[4];
+            }else if(continentDatas=="OC"){
+              
+              dVals[1] = int(OCindexCon/15);
+              dVals[2] = eachStart[5];
+            }else if(continentDatas=="Not Results"){
+              
+              dVals[1] = int(NRindexCon/15);
+              dVals[2] = eachStart[6];
+              }
+
+        return dVals;
+  }
+
+  void basicUI() {
+
+      background(16,16,16);
+      noStroke();
+      image(worldMap, 256, 381, 512, 305);
+      fill(27);
+      rect(0, 0, width, 25);
+
+      //Legend
+      noStroke();
+      textAlign(LEFT);
+      textSize(10);
+      fill(255,56,17);
+      ellipse(width/2-219, 166, 8, 8);
+      text("100"+" Reference Web Links", width/2-209, 161, 250, 200);
+
+      fill(0,185,248);
+      ellipse(width/2-77, 166, 8, 8);
+      text("100"+" Recent Tweets", width/2-67, 161, 250, 200); 
+
+      fill(255);
+      ellipse(width/2+35, 166, 8, 8);
+      text("Retweeted Tweets", width/2+46, 161, 250, 200); 
+
+      fill(255,255,0);
+      ellipse(width/2+144, 166, 8, 8);
+      text("Hot on Twitter", width/2+154, 161, 250, 200); 
+
+      //bout BTN
+      noStroke();
+      if(aboutBTNOver==true)
+      {
+            fill(45);
+      }else{
+        fill(30);
+      }
+
+      rect(width-54, 0, 54, 25);
+      fill(255);
+      textSize(12);
+      text("About", width-44, 8, 250, 200);
+
+
+
+      //horizon line & below cross line
+      stroke(255);
+      strokeWeight(0.1); 
+      line(0,height-386,width,height-386);
+          textSize(11);
+      //continent initial
+      String[] name = {"North America","South America","Europe","Africa","Asia","Oceania","Somewhere on this Planet"};
+      for(i=0; i<7; i++)
+      {
+        rect(eachStart[i]-3,height-330, 4,8);
+        text(name[i], eachStart[i]+6, height-322);
+        line(eachStart[i]-2,height-330, eachStart[i]-2,height-385);
+      }  
+
+      line(0,height,20,height);
+      line(0,height,0,height-20);
+      line(width,height,width-20,height);
+      line(width,height,width,height-20);
+      line(width/2-10,height-1,width/2-10,height-1);
+
+
+
+      // //Title
+      fill(255,56,17);
+      stroke(255,56,17);
+      strokeWeight(0.5);
+      for(i=0; i<7; i++)
+      {
+        ellipse(width/2-165-5*i,height-535,1,1);
+      }
+      for(i=0; i<7; i++)
+      {
+        ellipse(width/2-165-11*i,height-535,1,1);
+      }
+
+      fill(0,185,248);
+      stroke(0,185,248);
+      strokeWeight(0.5);
+      for(i=0; i<7; i++)
+      {
+         ellipse(width/2+160+5*i,height-535,1,1);
+      }
+      for(i=0; i<7; i++)
+      {
+         ellipse(width/2+160+11*i,height-535,1,1);
+      }
+       //ellipse(width/2+170,height-520,1,1);
+    
+      fill(180);
+      textSize(17);
+      String s = "Finding datalovers and their stories from";
+      text(s, width/2-157, height-535); 
+  }
+
+    void mouseover() 
+    {  
+          int heightCal = 545;
+      //listBTNOver
+
+      if (mouseX > width/2-316-10 && mouseX < width/2-316+40 && 
+        mouseY > height-heightCal-35-10 && mouseY < height-heightCal-35+30) {
+
+        listBTNOver = true;
+      }
+      else {
+        listBTNOver = false;
+      }
+
+      //aboutBTNOver
+      if (mouseX > width-54 && mouseX < width && 
+        mouseY > 0 && mouseY < 25) {
+
+        aboutBTNOver = true;
+      }
+      else {
+        aboutBTNOver = false;
+      }
+
+      //linkBTNOver 
+      if (mouseX > width/2-300+540 && mouseX < width/2-300+580+20 && 
+        mouseY > height-heightCal+35 && mouseY < height-heightCal+55+20)
+      {
+        linkBTNOver = true;
+      }
+      else {
+        linkBTNOver = false;
+      }
+
+  }
+
+  void mousePressed() 
+  { 
+      //twitList Click
+      for (int j = 0; j < numCircles; j++) {
+        if (tlists[j].isTouched()) {
+          twitDetail = true;
+          refDetail = false;
+          //String userID = users.get(j); 
+          // url = "http://twitter.com/#!/"+userID;   
+          // link(url);
+          m = j;
+          tlists[m].clicked = true;
+          console.log(m+"ffff");
+        }
+      }
+
+      //refList Click  
+      for (int rowcount = 0; rowcount < rowCount; rowcount++) {
+        if (rlists[rowcount].isTouched()) {
+          refDetail = true;
+          twitDetail = false;
+          n = rowcount;
+          rlists[n].clicked = true;
+        }
+      }
+
+      //List BTN Click  
+      if (listBTNOver==true) {
+          twitDetail = false;
+          refDetail = false;
+        }
+
+
+      if (linkBTNOver==true && clicked == false)
+      {
+        if (twitDetail == true) {
+          int j =selectedTwit(selectedTwitNum);  
+          //String userID = screenName.get(i); 
+          if(dataReceived != true){
+            String twitfromUser = jfromUser[j];
+            int tweetIDNum = jtweetID[j];
+            }else{
+              String twitfromUser = fromUser[j];
+              int tweetIDNum = tweetID[j];
+            }
+
+          url = "http://twitter.com/#!/"+twitfromUser+"/"+"status"+"/"+tweetIDNum;
+        }
+
+        else if (refDetail == true) {
+          int i =selectedRef(selectedRefNum);
+          url = ref_URL[i];
+        }
+
+        link(url, "_new");
+        clicked = true;
+        
+      }else if(clicked == true)
+      {
+       clicked = false;
+      }
+
+           if (aboutBTNOver == true) {
+           String url = "https://www.behance.net/gallery/38523491/DATALOVERS?";
+           link(url, "_new");
+      }
+
+       for(j=0; j<7; j++){
+        if(mapArea[j].isTouched() == true){
+          listDimUpdate();
+          continentClicked = true;
+        }
+        
+      }
+
+  }
+
+    void mouseReleased()
+    {
+      continentClicked = false;
+      listDimReset();       
+      
+    } 
+
+
+  class Circle 
+  {
+      float x;
+      float y; // location
+      float dim; // dimension
+      //color c; // color
+
+      Circle(float x, float y) {
+        this.x = x;
+        this.y = y;
+        dim = 4;
+      }
+      
+       void update() {
+        x = (width*(x + 180)/360);
+        y = (height - height*(y + 90)/180);
+      }
+
+      void display() {
+        stroke(0,185,248);
+        strokeWeight(0.5);
+        fill(134, 232, 250,30);
+        ellipse(x, y, dim, dim);
+      }
+
+      boolean isTouched() {
+        float d = dist(x, y, mouseX, mouseY);
+        if (d < dim - 3) {
+          // locked = false;
+          return true;
+        }
+        else {
+          // locked = true;
+          return false;
+        }
+      }
+  }
+
+  class rCircle
+  {
+      float rx;
+      float ry; // location
+      float dim; // dimension
+      
+
+      rCircle(float _rx, float _ry) {
+        rx = _rx;
+        ry = _ry;
+        dim = 4;
+        diameter = dim;
+      }
+
+      
+      void display() {
+        stroke(255,56,17);
+        strokeWeight(0.5);
+        fill(255, 245, 0, 30);
+        ellipse(rx, ry, dim, dim); // a circle at position xy
+      }
+
+      boolean isTouched() {
+        float d = dist(rx, ry, mouseX, mouseY);
+        if (d < dim - 3) {
+          // locked = false;
+          return true;
+        }
+        else {
+          // locked = true;
+          return false;
+        }
+      }
+    }
+
+    //Reference List
+  class rList 
+  {
+      float x;
+      float y; // location
+      float dim; // dimension
+      color c; // color
+      boolean clicked;
+
+      rList(float x, float y) {
+        this.x = x;
+        this.y = y;
+        dim = 7.5;
+        c = color(255,56,17);
+        clicked = false;
+      }
+      
+      void update() {
+        x = (width*(x + 180)/360);
+        y = (height - height*(y + 90)/180);
+      }
+
+      void display() {
+        stroke(255,56,17);
+        strokeWeight(0.5);
+        fill(c);
+        ellipse(x, y, dim, dim);
+      }
+
+      boolean isTouched() {
+        float d = dist(x, y, mouseX, mouseY);
+        if (d < dim - 3) {
+          // locked = false;
+          return true;
+        }
+        else {
+          // locked = true;
+          return false;
+        }
+      }
+  }
+
+  //Twitter List
+  class tList 
+  {  
+      float x;
+      float y; // location
+      float dim; // dimension
+      color c; // color
+      color maxColor; // color
+      boolean clicked;
+
+      tList(float x, float y) {
+        this.x = x;
+        this.y = y;
+        dim = 7.5;
+        c = color(0,185,248);
+        maxColor = color(0,185,248);
+        clicked = false;
+      }
+      
+       void update() {
+        x = (width*(x + 180)/360);
+        y = (height - height*(y + 90)/180);
+      }
+
+      void display() {
+        //noStroke();
+        stroke(maxColor);
+        strokeWeight(0.5);
+        fill(c);
+        ellipse(x, y, dim, dim);
+      }
+
+      boolean isTouched() {
+        float d = dist(x, y, mouseX, mouseY);
+        if (d < dim - 3) {
+          // locked = false;
+          return true;
+        }
+        else {
+          // locked = true;
+          return false;
+        }
+      }
+  }
+
+  class MapArea 
+  {
+      float x;
+      float y; // location
+      float dim; // dimension
+      color c; // color
+      boolean clicked;
+
+      MapArea(float x, float y) {
+        this.x = x;
+        this.y = y;
+        dim = 80;
+        c = color(255,255,255,10);
+        clicked = false;
+      }
+      
+      void update() {
+        x = (width*(x + 180)/360);
+        y = (height - height*(y + 90)/180);
+      }
+
+      void display() {
+        noStroke();
+        //stroke(150);
+        //strokeWeight(0.5);
+        fill(c);
+        ellipse(x, y, dim, dim);
+      }
+
+      boolean isTouched() {
+        float d = dist(x, y, mouseX, mouseY);
+        if (d < dim-40) {
+          // locked = false;
+          return true;
+        }
+        else {
+          // locked = true;
+          return false;
+        }
+      }
+  }
+
+</script><canvas><span style="color: #888888; font-size:10pt; font-family: 나눔고딕, NanumGothic, sans-serif; text-align: center; text-valign: middle; text-decoration: none;">You'll need <a href="http://www.google.com/chrome">Google Chrome</a> or any modern browser (except IE) to view the project page efficiently.</span></canvas>
+</td>
+
+<td width="10%">
+</td>
+</tr>
+
+<tr>
+<th colspan="3" valign="bottom" style="text-align:right">
+
+<span style="BACKGROUND-COLOR: #222222; color: #666666; font-size:8pt; font-family: 나눔고딕, NanumGothic, sans-serif; text-align: right; text-decoration: none;"> <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.hyemisong.com/datavislovers/"target="_blank">
+&nbspfacebook&nbsp</a>|
+
+<a href="http://twitter.com/intent/tweet?source=webclient&text=New+%23data+visualization+research+project!!+Title%3A+Here,+Data+Visualization+Lovers+are!+http%3A%2F%2Fwww.hyemisong.com/datavislovers%2F+%40DataVisLovers+%40BohyemianSong"target="_blank">twitter&nbsp</a>|
+
+<span style="BACKGROUND-COLOR: #222222; color: #666666; font-size:8pt; font-family: 나눔고딕, NanumGothic, sans-serif; text-align: right; text-decoration: none;">
+&nbspCopyright ⓒ 2016- All Rights Reserved by Hyemi Song&nbsp </span>
+
+</th>
+</tr>
+</table>
+
+
+</body>
+</html>
